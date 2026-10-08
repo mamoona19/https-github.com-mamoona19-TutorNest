@@ -1,0 +1,486 @@
+<div class="dashboard">
+
+  <!-- =========================
+       Header
+  ========================== -->
+
+  <header class="dashboard-header">
+
+
+<div>
+  <span class="eyebrow">TutorNest</span>
+
+  <h1>
+    Welcome, {{ firstName }} {{ lastName }}
+  </h1>
+
+  <p>
+    Manage your tuition requests and tutoring activity.
+  </p>
+</div>
+
+<button
+  class="profile-btn"
+  (click)="goToProfile()"
+>
+  My Profile
+</button>
+
+
+  </header>
+
+  <!-- =========================
+       Stats
+  ========================== -->
+
+  <section class="stats">
+
+
+<div class="stat-card">
+  <span>Available Requests</span>
+  <strong>{{ availableRequests.length }}</strong>
+</div>
+
+<div class="stat-card">
+  <span>Accepted</span>
+  <strong>{{ acceptedCount }}</strong>
+</div>
+
+<div class="stat-card">
+  <span>Pending Demos</span>
+  <strong>{{ pendingDemoCount }}</strong>
+</div>
+
+<div class="stat-card">
+  <span>Active Tuition</span>
+  <strong>{{ activeTuitionCount }}</strong>
+</div>
+
+
+  </section>
+
+  <!-- =========================
+       Apply Message
+  ========================== -->
+
+  <div
+    class="apply-message"
+    *ngIf="applyMessage"
+  >
+    {{ applyMessage }}
+  </div>
+
+  <!-- =========================
+       My Applications
+  ========================== -->
+
+  <section class="requests-card">
+
+
+<div class="section-header">
+
+  <div>
+
+    <h2>
+      My Applications
+    </h2>
+
+    <p>
+      Track the tuition requests you have applied for.
+    </p>
+
+  </div>
+
+</div>
+
+
+<!-- No Applications -->
+
+<div
+  class="empty-state"
+  *ngIf="myApplications.length === 0"
+>
+
+  <div class="empty-icon">
+    📝
+  </div>
+
+  <h3>
+    No applications yet
+  </h3>
+
+  <p>
+    Your applications will appear here after you apply
+    for a tuition request.
+  </p>
+
+</div>
+
+
+<!-- Applications List -->
+
+<div
+  class="request-list"
+  *ngIf="myApplications.length > 0"
+>
+
+  <div
+    class="request-item"
+    *ngFor="let application of myApplications"
+  >
+
+    <!-- Application Information -->
+
+    <div class="request-info">
+
+      <span class="request-label">
+        Application #{{ application.requestTutorId }}
+      </span>
+
+      <h3>
+        {{ application.subjectName }} Tuition
+      </h3>
+
+      <p>
+        Tuition Request:
+
+        <strong>
+          #{{ application.tuitionRequestId }}
+        </strong>
+      </p>
+
+      <p>
+        Budget:
+
+        <strong>
+          Rs. {{ application.budget }}
+        </strong>
+      </p>
+
+      <p
+        *ngIf="
+          application.cityName ||
+          application.areaName
+        "
+      >
+        Location:
+
+        <strong>
+
+          {{ application.cityName }}
+
+          <span
+            *ngIf="application.areaName"
+          >
+            , {{ application.areaName }}
+          </span>
+
+        </strong>
+
+      </p>
+
+      <p>
+        Preferred Start:
+
+        {{ application.preferredStartDate | date:'mediumDate' }}
+      </p>
+
+      <p
+        *ngIf="application.tutorRemarks"
+      >
+        Your Remarks:
+
+        <strong>
+          {{ application.tutorRemarks }}
+        </strong>
+      </p>
+
+    </div>
+
+
+    <!-- Application Status -->
+
+    <div class="request-action">
+
+      <span
+        class="status-badge"
+        [class.pending]="
+          application.requestStatusId === 1
+        "
+        [class.accepted]="
+          application.requestStatusId === 2
+        "
+        [class.rejected]="
+          application.requestStatusId === 3
+        "
+      >
+        {{ application.applicationStatus }}
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  </section>
+
+  <!-- =========================
+       My Demos
+  ========================== -->
+
+  <section class="requests-card">
+
+
+<div class="section-header">
+
+  <div>
+
+    <h2>
+      My Demos
+    </h2>
+
+    <p>
+      View and track your demo requests.
+    </p>
+
+  </div>
+
+</div>
+
+
+<!-- No Demos -->
+
+<div
+  class="empty-state"
+  *ngIf="myDemoRequests.length === 0"
+>
+
+  <div class="empty-icon">
+    🎓
+  </div>
+
+  <h3>
+    No demo requests yet
+  </h3>
+
+  <p>
+    Your demo requests will appear here when a parent
+    requests a demo.
+  </p>
+
+</div>
+
+
+<!-- Demo List -->
+
+<div
+  class="request-list"
+  *ngIf="myDemoRequests.length > 0"
+>
+
+  <div
+    class="request-item"
+    *ngFor="let demo of myDemoRequests"
+  >
+
+    <!-- Demo Information -->
+
+    <div class="request-info">
+
+      <span class="request-label">
+        Demo #{{ demo.tutorDemoRequestId }}
+      </span>
+
+      <h3>
+        {{ demo.subjectName }} Tuition
+      </h3>
+
+      <p>
+        Student:
+
+        <strong>
+          {{ demo.studentName }}
+        </strong>
+      </p>
+
+      <p>
+        Tuition Type:
+
+        <strong>
+          {{ demo.tuitionTypeName }}
+        </strong>
+      </p>
+
+      <p>
+        Location:
+
+        <strong>
+
+          {{ demo.cityName }}
+
+          <span
+            *ngIf="demo.areaName"
+          >
+            , {{ demo.areaName }}
+          </span>
+
+        </strong>
+
+      </p>
+
+      <p>
+        Budget:
+
+        <strong>
+          Rs. {{ demo.budget }}
+        </strong>
+      </p>
+
+      <p>
+        Preferred Start:
+
+        {{ demo.preferredStartDate | date:'mediumDate' }}
+      </p>
+
+      <p
+        *ngIf="demo.parentRemarks"
+      >
+        Parent Remarks:
+
+        <strong>
+          {{ demo.parentRemarks }}
+        </strong>
+      </p>
+
+      <p>
+        Requested On:
+
+        {{ demo.requestedDate | date:'mediumDate' }}
+      </p>
+
+    </div>
+
+
+    <!-- =========================
+         Scheduled Demo
+    ========================== -->
+
+   <!-- Scheduled / Confirmed Demo -->
+
+<div
+  class="scheduled-demo"
+  *ngIf="
+    demo.demoStatusName?.toLowerCase() === 'scheduled' ||
+    demo.demoStatusName?.toLowerCase() === 'tutor confirmed' ||
+    demo.demoStatusName?.toLowerCase() === 'parent confirmed'
+  "
+>
+
+  <div class="scheduled-status">
+
+    <span
+  class="status-badge"
+  [class.pending]="
+    demo.demoStatusName?.toLowerCase().includes('scheduled')
+  "
+  [class.accepted]="
+    demo.demoStatusName?.toLowerCase().includes('confirmed')
+  "
+>
+  {{ demo.demoStatusName }}
+</span>
+
+  </div>
+
+  <div class="scheduled-demo-details">
+
+    <div>
+      <span>Date</span>
+      <strong>
+        {{ demo.scheduledDate | date:'dd MMM yyyy' }}
+      </strong>
+    </div>
+
+    <div>
+      <span>Time</span>
+      <strong>
+        {{ demo.scheduledStartTime }} -
+        {{ demo.scheduledEndTime }}
+      </strong>
+    </div>
+
+  </div>
+
+  <!-- Tutor Confirmation -->
+
+ <div
+  class="demo-confirm-action"
+  *ngIf="
+    demo.demoStatusName?.toLowerCase().includes('scheduled')
+  "
+>
+
+  <p>
+    Please confirm that you are available for this scheduled demo.
+  </p>
+
+  <button
+    type="button"
+    class="confirm-demo-btn"
+    (click)="confirmDemo(demo)"
+  >
+    Confirm Availability
+  </button>
+
+</div>
+<!-- Complete Demo -->
+
+<div
+  class="demo-complete-action"
+  *ngIf="
+    demo.demoStatusName?.toLowerCase() === 'parent confirmed'
+  "
+>
+  <p>
+    Has the demo session been completed?
+  </p>
+
+  <button
+    type="button"
+    class="complete-demo-btn"
+    (click)="completeDemo(demo)"
+  >
+    Complete Demo
+  </button>
+</div>
+</div>
+
+
+    <!-- =========================
+         Other Demo Statuses
+    ========================== -->
+
+   <!-- Other Demo Statuses -->
+
+<div
+  class="request-action"
+  *ngIf="
+    demo.demoStatusId !== 4 &&
+    demo.demoStatusId !== 7
+  "
+>
+  <span class="status-badge pending">
+    {{ demo.demoStatusName }}
+  </span>
+</div>
+
+  </div>
+
+</div>
+
+
+  </section>
+
+</div>

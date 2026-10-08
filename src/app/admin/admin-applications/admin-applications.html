@@ -1,0 +1,726 @@
+<div class="admin-page">
+
+  <!-- ====================================== -->
+
+  <!-- PAGE HEADER -->
+
+  <!-- ====================================== -->
+
+  <div class="page-header">
+
+
+<div class="admin-title">
+  Admin Dashboard
+</div>
+
+<h1>Tutor Applications</h1>
+
+<p>
+  Review and manage tutor applications submitted for tuition requests.
+</p>
+
+
+  </div>
+
+  <!-- ====================================== -->
+
+  <!-- APPLICATION COUNT -->
+
+  <!-- ====================================== -->
+
+  <p class="application-count">
+    Applications: {{ applications.length }}
+  </p>
+
+  <!-- ====================================== -->
+
+  <!-- APPLICATIONS -->
+
+  <!-- ====================================== -->
+
+  <div class="applications-grid">
+
+
+<div
+  class="application-card"
+  *ngFor="let application of applications"
+>
+
+  <!-- CARD HEADER -->
+
+  <div class="card-header">
+
+    <div>
+
+      <span class="application-number">
+        Application #{{ application.requestTutorId }}
+      </span>
+
+      <h2>
+        {{ application.subjectName }} Tuition
+      </h2>
+
+    </div>
+
+   <span
+  class="status-badge"
+  [ngClass]="{
+    'status-accepted': application.applicationStatus === 'Accepted',
+    'status-rejected': application.applicationStatus === 'Rejected',
+    'status-pending': application.applicationStatus === 'Pending'
+  }"
+>
+  {{ application.applicationStatus }}
+</span>
+
+  </div>
+
+
+  <!-- ====================================== -->
+  <!-- APPLICATION DETAILS -->
+  <!-- ====================================== -->
+
+  <div class="details">
+
+    <div class="detail">
+      <span>Tuition Request</span>
+      <strong>
+        #{{ application.tuitionRequestId }}
+      </strong>
+    </div>
+
+    <div class="detail">
+      <span>Tutor</span>
+      <strong>
+        #{{ application.tutorId }}
+      </strong>
+    </div>
+
+    <div class="detail">
+      <span>Tuition Type</span>
+      <strong>
+        {{ application.tuitionTypeName }}
+      </strong>
+    </div>
+
+    <div class="detail">
+      <span>City</span>
+      <strong>
+        {{ application.cityName }}
+      </strong>
+    </div>
+
+    <div class="detail">
+      <span>Area</span>
+      <strong>
+        {{ application.areaName }}
+      </strong>
+    </div>
+
+    <div class="detail">
+      <span>Budget</span>
+      <strong>
+        Rs. {{ application.budget }}
+      </strong>
+    </div>
+
+  </div>
+
+
+  <!-- ====================================== -->
+  <!-- TUTOR REMARKS -->
+  <!-- ====================================== -->
+
+  <div
+    class="remarks"
+    *ngIf="application.tutorRemarks"
+  >
+
+    <span>Tutor Remarks</span>
+
+    <p>
+      {{ application.tutorRemarks }}
+    </p>
+
+  </div>
+
+
+  <!-- ====================================== -->
+  <!-- ADMIN REMARKS -->
+  <!-- ====================================== -->
+
+  <div
+    class="remarks"
+    *ngIf="application.adminRemarks"
+  >
+
+    <span>Admin Remarks</span>
+
+    <p>
+      {{ application.adminRemarks }}
+    </p>
+
+  </div>
+
+
+  <!-- ====================================== -->
+  <!-- START DATE -->
+  <!-- ====================================== -->
+
+  <div
+    class="selected"
+    *ngIf="application.preferredStartDate"
+  >
+
+    Preferred Start Date:
+    {{ application.preferredStartDate | date:'dd MMM yyyy' }}
+
+  </div>
+
+
+  <!-- ====================================== -->
+  <!-- APPLICATION ACTIONS -->
+  <!-- ====================================== -->
+
+  <div class="card-actions">
+
+    <!-- APPROVE -->
+
+    <button
+      type="button"
+      class="btn btn-approve"
+      (click)="approveApplication(application)"
+      *ngIf="application.applicationStatus === 'Pending'"
+    >
+      Approve
+    </button>
+
+
+    <!-- REJECT -->
+
+    <button
+      type="button"
+      class="btn btn-reject"
+      (click)="rejectApplication(application)"
+      *ngIf="application.applicationStatus === 'Pending'"
+    >
+      Reject
+    </button>
+
+
+    <!-- SELECT TUTOR -->
+
+    <button
+      type="button"
+      class="btn btn-select"
+      (click)="selectTutor(application)"
+      *ngIf="
+        application.applicationStatus === 'Accepted' &&
+        application.tuitionRequestStatusId === 5 &&
+        !isTutorSelected(application)
+      "
+    >
+      Select Tutor
+    </button>
+
+  </div>
+
+
+  <!-- ====================================== -->
+  <!-- NEXT STEP / CURRENT STATUS -->
+  <!-- ====================================== -->
+
+ <div class="next-step-box">
+
+  <strong>Application Status</strong>
+
+  <!-- REJECTED -->
+  <span
+    *ngIf="application.applicationStatus === 'Rejected'"
+    class="step-rejected"
+  >
+    Rejected by Admin
+  </span>
+
+  <!-- ACCEPTED -->
+  <ng-container
+    *ngIf="application.applicationStatus === 'Accepted'"
+  >
+
+    <!-- Tutor Selected -->
+    <span
+      *ngIf="isTutorSelected(application)"
+      class="step-success"
+    >
+      Tutor selected — Tuition is now active.
+    </span>
+
+    <!-- Demo Completed -->
+    <span
+      *ngIf="
+        !isTutorSelected(application) &&
+        application.tuitionRequestStatusId === 5
+      "
+    >
+      Demo completed — awaiting tutor selection.
+    </span>
+
+    <!-- Demo Scheduled -->
+    <span
+      *ngIf="
+        !isTutorSelected(application) &&
+        application.tuitionRequestStatusId === 4
+      "
+    >
+      Demo scheduled — waiting for the demo session.
+    </span>
+
+    <!-- Pending -->
+    <span
+      *ngIf="
+        !isTutorSelected(application) &&
+        application.tuitionRequestStatusId === 1
+      "
+    >
+      Waiting for demo scheduling.
+    </span>
+
+    <!-- Completed -->
+    <span
+      *ngIf="
+        !isTutorSelected(application) &&
+        application.tuitionRequestStatusId === 7
+      "
+    >
+      Tuition completed.
+    </span>
+
+  </ng-container>
+
+</div>
+
+
+  <!-- ====================================== -->
+  <!-- TUTOR SELECTION STATUS -->
+  <!-- ====================================== -->
+
+  <div
+    class="selected-tutor-status"
+    *ngIf="isTutorSelected(application)"
+  >
+    <span class="selected-tutor-badge">
+      ✓ Tutor Selected
+    </span>
+
+    <span class="selected-tutor-message">
+      Tuition is now active.
+    </span>
+  </div>
+
+
+  <!-- ====================================== -->
+  <!-- NOT SELECTED -->
+  <!-- ====================================== -->
+
+  <div
+    class="not-selected-status"
+    *ngIf="
+      application.applicationStatus === 'Accepted' &&
+      !isTutorSelected(application) &&
+      isAnotherTutorSelected(application)
+    "
+  >
+    <span class="not-selected-tutor-badge">
+      Not Selected
+    </span>
+
+    <span>
+      Another tutor was selected for this tuition.
+    </span>
+  </div>
+
+</div>
+
+
+  </div>
+
+  <!-- ====================================== -->
+
+  <!-- PENDING DEMO REQUESTS -->
+
+  <!-- ====================================== -->
+
+  <section class="demo-section">
+
+
+<!-- SECTION HEADER -->
+
+<div class="demo-section-header">
+
+  <div>
+
+    <h1>Pending Demo Requests</h1>
+
+    <p>
+      Review demo requests submitted by parents.
+    </p>
+
+  </div>
+
+
+  <!-- DEMO COUNT -->
+
+  <span
+    class="demo-count"
+    *ngIf="!isLoadingDemos"
+  >
+    {{ pendingDemoRequests.length }}
+    request{{ pendingDemoRequests.length === 1 ? '' : 's' }}
+  </span>
+
+
+  <!-- LOADING -->
+
+  <span
+    class="demo-count"
+    *ngIf="isLoadingDemos"
+  >
+    Loading...
+  </span>
+
+</div>
+
+
+<!-- ====================================== -->
+<!-- ERROR -->
+<!-- ====================================== -->
+
+<div
+  class="demo-error"
+  *ngIf="demoError"
+>
+  {{ demoError }}
+</div>
+
+
+<!-- ====================================== -->
+<!-- NO DEMOS -->
+<!-- ====================================== -->
+
+<div
+  class="no-demos"
+  *ngIf="
+    !isLoadingDemos &&
+    !demoError &&
+    pendingDemoRequests.length === 0
+  "
+>
+
+  <div class="no-demos-icon">
+    ⏳
+  </div>
+
+  <div>
+
+    <h4>
+      No pending demo requests
+    </h4>
+
+    <p>
+      There are currently no demo requests
+      waiting for admin review.
+    </p>
+
+  </div>
+
+</div>
+
+
+<!-- ====================================== -->
+<!-- DEMO REQUEST CARDS -->
+<!-- ====================================== -->
+
+<div
+  class="demo-card"
+  *ngFor="let demo of pendingDemoRequests"
+>
+
+  <!-- DEMO CARD HEADER -->
+
+  <div class="demo-card-header">
+
+    <div>
+
+      <span class="demo-number">
+        Demo #{{ demo.tutorDemoRequestId }}
+      </span>
+
+      <h2>
+        {{ demo.subjectName }} Tuition
+      </h2>
+
+    </div>
+
+    <span class="demo-status">
+      {{ demo.demoStatusName }}
+    </span>
+
+  </div>
+
+
+  <!-- ====================================== -->
+  <!-- DEMO DETAILS -->
+  <!-- ====================================== -->
+
+  <div class="details">
+
+    <div class="detail">
+
+      <span>Student</span>
+
+      <strong>
+        {{ demo.studentName }}
+      </strong>
+
+    </div>
+
+
+    <div class="detail">
+
+      <span>Tutor</span>
+
+      <strong>
+        {{ demo.tutorFirstName }}
+        {{ demo.tutorLastName }}
+      </strong>
+
+    </div>
+
+
+    <div class="detail">
+
+      <span>Tuition Type</span>
+
+      <strong>
+        {{ demo.tuitionTypeName }}
+      </strong>
+
+    </div>
+
+
+    <div class="detail">
+
+      <span>City</span>
+
+      <strong>
+        {{ demo.cityName }}
+      </strong>
+
+    </div>
+
+
+    <div class="detail">
+
+      <span>Area</span>
+
+      <strong>
+        {{ demo.areaName }}
+      </strong>
+
+    </div>
+
+
+    <div class="detail">
+
+      <span>Budget</span>
+
+      <strong>
+        Rs. {{ demo.budget }}
+      </strong>
+
+    </div>
+
+
+    <div class="detail">
+
+      <span>Preferred Start</span>
+
+      <strong>
+        {{ demo.preferredStartDate | date:'dd MMM yyyy' }}
+      </strong>
+
+    </div>
+
+
+    <div class="detail">
+
+      <span>Requested On</span>
+
+      <strong>
+        {{ demo.requestedDate | date:'dd MMM yyyy, h:mm a' }}
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <!-- ====================================== -->
+  <!-- PARENT REMARKS -->
+  <!-- ====================================== -->
+
+  <div
+    class="remarks"
+    *ngIf="demo.parentRemarks"
+  >
+
+    <span>
+      Parent Remarks
+    </span>
+
+    <p>
+      {{ demo.parentRemarks }}
+    </p>
+
+  </div>
+
+
+  <!-- ====================================== -->
+  <!-- DEMO ACTIONS -->
+  <!-- ====================================== -->
+
+  <div class="card-actions">
+
+    <!-- SCHEDULE DEMO -->
+
+    <button
+      type="button"
+      class="btn btn-approve"
+      (click)="showDemoAvailability(demo)"
+    >
+      Schedule Demo
+    </button>
+
+
+    <!-- REJECT -->
+
+    <button
+      type="button"
+      class="btn btn-reject"
+    >
+      Reject
+    </button>
+
+  </div>
+
+
+  <!-- ====================================== -->
+  <!-- DEMO AVAILABILITY -->
+  <!-- ====================================== -->
+
+  <div
+    class="availability-box"
+    *ngIf="
+      selectedDemo?.tutorDemoRequestId ===
+      demo.tutorDemoRequestId
+    "
+  >
+
+
+    <!-- LOADING -->
+
+    <div *ngIf="isLoadingAvailability">
+
+      Loading available slots...
+
+    </div>
+
+
+    <!-- ERROR -->
+
+    <div
+      *ngIf="availabilityError"
+      class="error-message"
+    >
+
+      {{ availabilityError }}
+
+    </div>
+
+
+    <!-- NO AVAILABILITY -->
+
+    <div
+      *ngIf="
+        !isLoadingAvailability &&
+        !availabilityError &&
+        demoAvailability.length === 0
+      "
+    >
+
+      No availability slots submitted by tutor.
+
+    </div>
+
+
+    <!-- AVAILABLE SLOTS -->
+
+    <div
+      *ngIf="
+        !isLoadingAvailability &&
+        !availabilityError &&
+        demoAvailability.length > 0
+      "
+    >
+
+      <h4>
+        Select Demo Time
+      </h4>
+
+
+      <div
+        class="availability-slot"
+        *ngFor="let slot of demoAvailability"
+      >
+
+        <div>
+
+          <strong>
+            {{ slot.availableDate | date:'dd MMM yyyy' }}
+          </strong>
+
+          <span>
+            {{ slot.startTime }} - {{ slot.endTime }}
+          </span>
+
+          <small
+            *ngIf="slot.tutorRemarks"
+          >
+            {{ slot.tutorRemarks }}
+          </small>
+
+        </div>
+
+
+        <!-- SELECT SLOT -->
+
+        <button
+          type="button"
+          class="btn btn-approve"
+          (click)="selectDemoSlot(demo, slot)"
+        >
+          Select
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  </section>
+
+</div>

@@ -1,0 +1,1837 @@
+<div class="parent-dashboard">
+
+  <!-- =========================
+       DASHBOARD HEADER
+  ========================== -->
+
+  <div class="dashboard-header">
+
+
+<div>
+  <span class="page-eyebrow">
+    Parent Portal
+  </span>
+
+  <h1>
+    Parent Dashboard
+  </h1>
+
+  <p>
+    Manage your tuition requests and find the right tutor for your child.
+  </p>
+</div>
+
+
+  </div>
+
+  <!-- =========================
+       REQUEST A TUTOR
+  ========================== -->
+
+  <div class="request-section">
+
+
+<div class="request-section-header">
+
+  <div>
+    <span class="section-eyebrow">
+      Find a Tutor
+    </span>
+
+    <h2>
+      Request a Tutor
+    </h2>
+
+    <p>
+      Need a tutor for your child? Create a new tuition request.
+    </p>
+  </div>
+
+  <button
+    type="button"
+    class="request-toggle-btn"
+    (click)="showRequestForm = !showRequestForm">
+
+    <span *ngIf="!showRequestForm">
+      + Request a Tutor
+    </span>
+
+    <span *ngIf="showRequestForm">
+      × Close Form
+    </span>
+
+  </button>
+
+</div>
+
+
+<!-- =========================
+     REQUEST FORM
+========================== -->
+<div
+  class="request-card"
+  *ngIf="showRequestForm">
+
+  <div class="card-header">
+
+    <div>
+      <h2>
+        Request a Tutor
+      </h2>
+
+      <p>
+        Tell us what kind of tuition your child needs.
+      </p>
+    </div>
+
+  </div>
+
+
+  <form
+    [formGroup]="requestForm"
+    (ngSubmit)="submitRequest()">
+
+    <div class="form-grid">
+
+      <!-- Student -->
+      <div class="form-group">
+
+        <label>
+          Select Child
+        </label>
+
+        <select formControlName="studentId">
+
+          <option value="">
+            Select Child
+          </option>
+
+          <option
+            *ngFor="let student of students"
+            [value]="student.studentId">
+
+            {{ student.studentName }}
+
+          </option>
+
+        </select>
+
+        <small
+          class="error-text"
+          *ngIf="
+            requestForm.get('studentId')?.touched &&
+            requestForm.get('studentId')?.hasError('required')
+          ">
+
+          Please select a child.
+
+        </small>
+
+      </div>
+
+
+      <!-- Tuition Type -->
+      <div class="form-group">
+
+        <label>
+          Tuition Type
+        </label>
+
+        <select formControlName="tuitionTypeId">
+
+          <option value="1">
+            Home Tuition
+          </option>
+
+          <option value="2">
+            Online Tuition
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- Subject -->
+      <div class="form-group">
+
+        <label>
+          Subject
+        </label>
+
+        <select formControlName="subjectId">
+
+          <option value="">
+            Select Subject
+          </option>
+
+          <option
+            *ngFor="let subject of subjects"
+            [value]="subject.subjectId">
+
+            {{ subject.subjectName }}
+
+          </option>
+
+        </select>
+
+        <small
+          class="error-text"
+          *ngIf="
+            requestForm.get('subjectId')?.touched &&
+            requestForm.get('subjectId')?.hasError('required')
+          ">
+
+          Please select a subject.
+
+        </small>
+
+      </div>
+
+
+      <!-- City -->
+      <div class="form-group">
+
+        <label>
+          City
+        </label>
+
+        <select
+          formControlName="cityId"
+          (change)="loadAreas(+$any($event.target).value)">
+
+          <option value="">
+            Select City
+          </option>
+
+          <option
+            *ngFor="let city of cities"
+            [value]="city.cityId">
+
+            {{ city.cityName }}
+
+          </option>
+
+        </select>
+
+        <small
+          class="error-text"
+          *ngIf="cityError">
+
+          {{ cityError }}
+
+        </small>
+
+      </div>
+
+
+      <!-- Area -->
+      <div class="form-group">
+
+        <label>
+          Area
+        </label>
+
+        <select formControlName="areaId">
+
+          <option value="">
+            Select Area
+          </option>
+
+          <option
+            *ngFor="let area of areas"
+            [value]="area.areaId">
+
+            {{ area.areaName }}
+
+          </option>
+
+        </select>
+
+        <small
+          class="error-text"
+          *ngIf="
+            requestForm.get('areaId')?.touched &&
+            requestForm.get('areaId')?.hasError('required')
+          ">
+
+          Please select an area.
+
+        </small>
+
+      </div>
+
+
+      <!-- Budget -->
+      <div class="form-group">
+
+        <label>
+          Monthly Budget
+        </label>
+
+        <input
+          type="number"
+          formControlName="budget"
+          placeholder="Enter your budget" />
+
+        <small
+          class="error-text"
+          *ngIf="
+            requestForm.get('budget')?.touched &&
+            requestForm.get('budget')?.hasError('required')
+          ">
+
+          Please enter your monthly budget.
+
+        </small>
+
+        <small
+          class="error-text"
+          *ngIf="
+            requestForm.get('budget')?.touched &&
+            requestForm.get('budget')?.hasError('min')
+          ">
+
+          Budget must be greater than 0.
+
+        </small>
+
+      </div>
+
+
+      <!-- Tutor Gender -->
+      <div class="form-group">
+
+        <label>
+          Preferred Tutor Gender
+        </label>
+
+        <select formControlName="preferredTutorGenderId">
+
+          <option value="0">
+            No Preference
+          </option>
+
+          <option value="1">
+            Male
+          </option>
+
+          <option value="2">
+            Female
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- Start Date -->
+      <div class="form-group">
+
+        <label>
+          Preferred Start Date
+        </label>
+
+        <input
+          type="date"
+          formControlName="preferredStartDate" />
+
+        <small
+          class="error-text"
+          *ngIf="
+            requestForm.get('preferredStartDate')?.touched &&
+            requestForm.get('preferredStartDate')?.hasError('required')
+          ">
+
+          Please select a start date.
+
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <!-- Special Instructions -->
+    <div class="form-group full-width">
+
+      <label>
+        Special Instructions
+      </label>
+
+      <textarea
+        rows="4"
+        formControlName="specialInstructions"
+        placeholder="Tell us about your tuition requirements...">
+      </textarea>
+
+    </div>
+
+
+    <!-- Success -->
+    <div
+      class="success-message"
+      *ngIf="successMessage">
+
+      {{ successMessage }}
+
+    </div>
+
+
+    <!-- Error -->
+    <div
+      class="error-message"
+      *ngIf="errorMessage">
+
+      {{ errorMessage }}
+
+    </div>
+
+
+    <!-- Submit -->
+    <button
+      type="submit"
+      class="submit-btn"
+      [disabled]="loading">
+
+      <span *ngIf="!loading">
+        Submit Tuition Request
+      </span>
+
+      <span *ngIf="loading">
+        Submitting...
+      </span>
+
+    </button>
+
+  </form>
+
+</div>
+
+
+  </div>
+
+  <!-- =====================================================
+       MY TUITION REQUESTS
+  ====================================================== -->
+
+  <div class="requests-card">
+
+
+<div class="card-header">
+
+  <div>
+
+    <span class="section-eyebrow">
+      Your Requests
+    </span>
+
+    <h2>
+      My Tuition Requests
+    </h2>
+
+    <p>
+      Track the status of your submitted tuition requests.
+    </p>
+
+  </div>
+
+
+  <!-- Request Count -->
+  <div
+    class="request-count"
+    *ngIf="!isLoadingRequests && !requestsError">
+
+    <strong>
+      {{ myRequests.length }}
+    </strong>
+
+    <span>
+      Request{{ myRequests.length === 1 ? '' : 's' }}
+    </span>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     REQUESTS LOADING
+========================== -->
+<div
+  class="requests-loading"
+  *ngIf="isLoadingRequests">
+
+  <div class="loading-spinner"></div>
+
+  <span>
+    Loading your tuition requests...
+  </span>
+
+</div>
+
+
+<!-- =========================
+     REQUESTS ERROR
+========================== -->
+<div
+  class="requests-error"
+  *ngIf="!isLoadingRequests && requestsError">
+
+  <div class="error-icon">
+    !
+  </div>
+
+  <div>
+
+    <strong>
+      Unable to load requests
+    </strong>
+
+    <p>
+      {{ requestsError }}
+    </p>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     NO REQUESTS
+========================== -->
+<div
+  class="no-requests"
+  *ngIf="
+    !isLoadingRequests &&
+    !requestsError &&
+    myRequests.length === 0
+  ">
+
+  <div class="empty-icon">
+    +
+  </div>
+
+  <h3>
+    No tuition requests yet
+  </h3>
+
+  <p>
+    Click "Request a Tutor" above to get started.
+  </p>
+
+</div>
+
+
+<!-- =========================
+     REQUESTS LIST
+========================== -->
+<div
+  class="requests-list"
+  *ngIf="
+    !isLoadingRequests &&
+    !requestsError &&
+    myRequests.length > 0
+  ">
+
+  <!-- Request Item -->
+  <div
+    class="request-item"
+    *ngFor="let request of myRequests">
+
+    <!-- Request Header -->
+    <div class="request-item-header">
+
+      <div class="request-title-area">
+
+        <div>
+
+          <h3>
+            {{ request.subjectName }}
+          </h3>
+
+          <span class="request-id">
+            Request #{{ request.tuitionRequestId }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- Status -->
+      <span
+        class="status-badge"
+        [ngClass]="{
+          'status-pending': request.statusId === 1,
+          'status-matched': request.statusId === 2,
+          'status-accepted': request.statusId === 3,
+          'status-demo': request.statusId === 4,
+          'status-completed': request.statusId >= 5
+        }">
+
+        {{ request.statusName }}
+
+      </span>
+
+    </div>
+
+
+    <!-- Request Details -->
+    <div class="request-details">
+
+      <!-- Child -->
+      <div class="detail-item">
+
+        <span class="detail-label">
+          Child
+        </span>
+
+        <span class="detail-value">
+          {{ request.studentName }}
+        </span>
+
+      </div>
+
+
+      <!-- Tuition Type -->
+      <div class="detail-item">
+
+        <span class="detail-label">
+          Tuition Type
+        </span>
+
+        <span class="detail-value">
+          {{ request.tuitionTypeName }}
+        </span>
+
+      </div>
+
+
+      <!-- Location -->
+      <div class="detail-item">
+
+        <span class="detail-label">
+          Location
+        </span>
+
+        <span class="detail-value">
+          {{ request.cityName }}, {{ request.areaName }}
+        </span>
+
+      </div>
+
+
+      <!-- Budget -->
+      <div class="detail-item">
+
+        <span class="detail-label">
+          Monthly Budget
+        </span>
+
+        <span class="detail-value budget-value">
+          Rs. {{ request.budget | number }}
+        </span>
+
+      </div>
+
+
+      <!-- Start Date -->
+      <div class="detail-item">
+
+        <span class="detail-label">
+          Start Date
+        </span>
+
+        <span class="detail-value">
+
+          {{
+            request.preferredStartDate
+              ? (request.preferredStartDate | date:'dd MMM yyyy')
+              : 'Not specified'
+          }}
+
+        </span>
+
+      </div>
+
+
+      <!-- Submitted -->
+      <div class="detail-item">
+
+        <span class="detail-label">
+          Submitted
+        </span>
+
+        <span class="detail-value">
+
+          {{
+            request.createdDate
+              ? (request.createdDate | date:'dd MMM yyyy, hh:mm a')
+              : 'Not available'
+          }}
+
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- Special Instructions -->
+    <div
+      class="special-instructions"
+      *ngIf="request.specialInstructions">
+
+      <span class="detail-label">
+        Special Instructions
+      </span>
+
+      <p>
+        {{ request.specialInstructions }}
+      </p>
+
+    </div>
+
+
+    <!-- Request Actions -->
+    <div class="request-actions">
+
+      <button
+        type="button"
+        class="view-applications-btn"
+        (click)="loadTutorApplications(request.tuitionRequestId)">
+
+        <span>
+          View Tutor Applications
+        </span>
+
+        <span class="button-arrow">
+          →
+        </span>
+
+      </button>
+
+    </div>
+
+
+    <!-- =================================================
+         TUTOR APPLICATIONS
+    ================================================== -->
+    <div
+      class="applications-section"
+      *ngIf="selectedRequestId === request.tuitionRequestId">
+
+      <!-- Applications Header -->
+      <div class="applications-header">
+
+        <div>
+
+          <span class="section-eyebrow">
+            Tutor Matching
+          </span>
+
+          <h3>
+            Tutor Applications
+          </h3>
+
+          <p>
+            Tutors who have applied for this request.
+          </p>
+
+        </div>
+
+
+        <!-- Loading -->
+        <span
+          *ngIf="isLoadingApplications"
+          class="applications-count">
+
+          Loading...
+
+        </span>
+
+
+        <!-- Count -->
+        <span
+          *ngIf="
+            !isLoadingApplications &&
+            !applicationsError
+          "
+          class="applications-count">
+
+          {{ tutorApplications.length }}
+          application{{ tutorApplications.length === 1 ? '' : 's' }}
+
+        </span>
+
+      </div>
+
+
+      <!-- Applications Error -->
+      <div
+        class="applications-error"
+        *ngIf="
+          !isLoadingApplications &&
+          applicationsError
+        ">
+
+        {{ applicationsError }}
+
+      </div>
+
+
+      <!-- No Applications -->
+      <div
+        class="no-applications"
+        *ngIf="
+          !isLoadingApplications &&
+          !applicationsError &&
+          tutorApplications.length === 0
+        ">
+
+        <div class="no-applications-icon">
+          ⏳
+        </div>
+
+        <div>
+
+          <h4>
+            No tutor applications yet
+          </h4>
+
+          <p>
+            Tutors have not applied for this tuition request yet.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           APPLICATIONS LIST
+      ========================== -->
+      <div
+        class="applications-list"
+        *ngIf="
+          !isLoadingApplications &&
+          !applicationsError &&
+          tutorApplications.length > 0
+        ">
+
+        <!-- Application -->
+        <div
+          class="application-item"
+          *ngFor="let application of tutorApplications">
+
+          <!-- Application Header -->
+          <div class="application-header">
+
+            <div class="tutor-info">
+
+              <div class="tutor-avatar">
+                {{ application.firstName?.charAt(0)?.toUpperCase() }}
+              </div>
+
+              <span class="tutor-name">
+                {{ application.firstName }}
+                {{ application.lastName }}
+              </span>
+
+            </div>
+
+
+            <!-- Application Status -->
+            <div class="application-actions">
+
+              <span class="application-status">
+                {{
+                  application.demoRequested === true
+                    ? (application.demoStatusName === 'Completed'
+                        ? 'Demo Completed'
+                        : application.demoStatusName)
+                    : application.requestStatusName
+                }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- Application Details -->
+          <div class="application-details">
+
+            <div class="application-detail">
+
+              <span class="application-label">
+
+                <span class="detail-icon">
+                  📅
+                </span>
+
+                Applied On
+
+              </span>
+
+              <span class="application-value">
+
+                {{
+                  application.createdDate
+                    | date:'dd MMM yyyy, hh:mm a'
+                }}
+
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- Tutor Remarks -->
+          <div
+            class="application-remarks"
+            *ngIf="application.tutorRemarks">
+
+            <span class="application-label">
+              Tutor Message
+            </span>
+
+            <p>
+              {{ application.tutorRemarks }}
+            </p>
+
+          </div>
+
+
+          <!-- =========================
+               APPLICATION ACTION
+          ========================== -->
+          <div
+            class="application-status-row"
+            *ngIf="application.requestStatusId === 2">
+
+            <!-- Tutor Selected -->
+            <div
+              class="selected-tutor-status"
+              *ngIf="application.isSelected">
+
+              <span class="selected-check">
+                ✓
+              </span>
+
+              <span>
+                Tutor Selected
+              </span>
+
+            </div>
+
+
+            <!-- Request Demo -->
+            <button
+              type="button"
+              class="btn-demo"
+              *ngIf="
+                !application.isSelected &&
+                !application.demoRequested
+              "
+              (click)="requestDemo(application)">
+
+              Request Demo
+
+            </button>
+
+
+            <!-- Demo Status -->
+            <span
+              *ngIf="
+                !application.isSelected &&
+                application.demoRequested
+              "
+              class="demo-status">
+
+              {{ application.demoStatusName || 'Demo Requested' }}
+
+            </span>
+
+
+            <!-- Selected Tutor + Demo Status -->
+            <div
+              class="selected-demo-status"
+              *ngIf="
+                application.isSelected &&
+                application.demoRequested
+              ">
+
+              ✓ Demo {{ application.demoStatusName }}
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Demo Message -->
+        <div
+          *ngIf="demoMessage"
+          class="demo-message"
+          [class.success]="demoMessageType === 'success'"
+          [class.error]="demoMessageType === 'error'">
+
+          {{ demoMessage }}
+
+        </div>
+
+      </div>
+
+
+      <!-- Close Applications -->
+      <div class="applications-footer">
+
+        <button
+          type="button"
+          class="close-applications-btn"
+          (click)="closeTutorApplications()">
+
+          Close Applications
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  </div>
+
+  <!-- =====================================================
+       MY DEMOS / SCHEDULED SESSIONS
+  ====================================================== -->
+
+  <div class="demos-card">
+
+
+<div class="card-header">
+
+  <div>
+
+    <span class="section-eyebrow">
+      Scheduled Sessions
+    </span>
+
+    <h2>
+      My Demos
+    </h2>
+
+    <p>
+      View and track your demo requests.
+    </p>
+
+  </div>
+
+
+  <div class="request-count">
+
+    <strong>
+      {{ parentDemoRequests.length }}
+    </strong>
+
+    <span>
+      Demo{{ parentDemoRequests.length === 1 ? '' : 's' }}
+    </span>
+
+  </div>
+
+</div>
+
+
+<!-- Loading -->
+<div
+  class="requests-loading"
+  *ngIf="isLoadingDemos">
+
+  <div class="loading-spinner"></div>
+
+  <span>
+    Loading your demos...
+  </span>
+
+</div>
+
+
+<!-- Empty -->
+<div
+  class="no-requests"
+  *ngIf="
+    !isLoadingDemos &&
+    parentDemoRequests.length === 0
+  ">
+
+  <div class="empty-icon">
+    📅
+  </div>
+
+  <h3>
+    No demos scheduled
+  </h3>
+
+  <p>
+    Your scheduled tutor demos will appear here.
+  </p>
+
+</div>
+
+
+<!-- Demo List -->
+<div
+  class="demo-list"
+  *ngIf="
+    !isLoadingDemos &&
+    parentDemoRequests.length > 0
+  ">
+
+  <div
+    class="demo-item"
+    *ngFor="let demo of parentDemoRequests">
+
+    <!-- Demo Header -->
+    <div class="demo-item-header">
+
+      <div>
+
+        <span class="section-eyebrow">
+          Demo #{{ demo.tutorDemoRequestId }}
+        </span>
+
+        <h3>
+          {{ demo.subjectName }} Tuition
+        </h3>
+
+        <span class="request-id">
+          Tuition Request #{{ demo.tuitionRequestId }}
+        </span>
+
+      </div>
+
+
+      <!-- Status -->
+      <span class="status-badge status-demo">
+        {{ demo.demoStatusName }}
+      </span>
+
+    </div>
+
+
+    <!-- Demo Details -->
+    <div class="request-details">
+
+      <!-- Tutor -->
+      <div class="detail-item">
+
+        <span class="detail-label">
+          Tutor
+        </span>
+
+        <span class="detail-value">
+
+          {{ demo.tutorFirstName }}
+          {{ demo.tutorLastName }}
+
+        </span>
+
+      </div>
+
+
+      <!-- Student -->
+      <div class="detail-item">
+
+        <span class="detail-label">
+          Student
+        </span>
+
+        <span class="detail-value">
+          {{ demo.studentName }}
+        </span>
+
+      </div>
+
+
+      <!-- Tuition Type -->
+      <div class="detail-item">
+
+        <span class="detail-label">
+          Tuition Type
+        </span>
+
+        <span class="detail-value">
+          {{ demo.tuitionTypeName }}
+        </span>
+
+      </div>
+
+
+      <!-- Location -->
+      <div class="detail-item">
+
+        <span class="detail-label">
+          Location
+        </span>
+
+        <span class="detail-value">
+
+          {{ demo.cityName }},
+          {{ demo.areaName }}
+
+        </span>
+
+      </div>
+
+
+      <!-- Budget -->
+      <div class="detail-item">
+
+        <span class="detail-label">
+          Monthly Budget
+        </span>
+
+        <span class="detail-value budget-value">
+
+          Rs. {{ demo.budget | number }}
+
+        </span>
+
+      </div>
+
+
+      <!-- Request -->
+      <div class="detail-item">
+
+        <span class="detail-label">
+          Request
+        </span>
+
+        <span class="detail-value">
+
+          #{{ demo.tuitionRequestId }}
+
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- Schedule -->
+    <div class="demo-schedule">
+
+      <!-- Date -->
+      <div class="schedule-item">
+
+        <div class="schedule-icon">
+          📅
+        </div>
+
+        <div>
+
+          <span class="detail-label">
+            Demo Date
+          </span>
+
+          <strong>
+
+            {{
+              demo.scheduledDate
+                ? (demo.scheduledDate | date:'EEE, dd MMM yyyy')
+                : 'Not scheduled'
+            }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- Time -->
+      <div class="schedule-item">
+
+        <div class="schedule-icon">
+          🕐
+        </div>
+
+        <div>
+
+          <span class="detail-label">
+            Demo Time
+          </span>
+
+          <strong>
+
+            {{ demo.scheduledStartTime }}
+            -
+            {{ demo.scheduledEndTime }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  </div>
+  <!-- =====================================================
+     MY INVOICES
+====================================================== -->
+
+<div class="invoices-card">
+
+  <!-- Invoices Header -->
+  <div class="card-header">
+
+    <div>
+
+      <span class="section-eyebrow">
+        Billing & Payments
+      </span>
+
+      <h2>
+        My Invoices
+      </h2>
+
+      <p>
+        View and manage your tuition invoices.
+      </p>
+
+    </div>
+
+    <!-- Invoice Count -->
+    <div
+      class="request-count"
+      *ngIf="!isLoadingInvoices && !invoicesError">
+
+      <strong>
+        {{ invoices.length }}
+      </strong>
+
+      <span>
+        Invoice{{ invoices.length === 1 ? '' : 's' }}
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       INVOICES LOADING
+  ========================== -->
+
+  <div
+    class="requests-loading"
+    *ngIf="isLoadingInvoices">
+
+    <div class="loading-spinner"></div>
+
+    <span>
+      Loading your invoices...
+    </span>
+
+  </div>
+
+
+  <!-- =========================
+       INVOICES ERROR
+  ========================== -->
+
+  <div
+    class="requests-error"
+    *ngIf="!isLoadingInvoices && invoicesError">
+
+    <div class="error-icon">
+      !
+    </div>
+
+    <div>
+
+      <strong>
+        Unable to load invoices
+      </strong>
+
+      <p>
+        {{ invoicesError }}
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       NO INVOICES
+  ========================== -->
+
+  <div
+    class="no-requests"
+    *ngIf="
+      !isLoadingInvoices &&
+      !invoicesError &&
+      invoices.length === 0
+    ">
+
+    <div class="empty-icon">
+      ₹
+    </div>
+
+    <h3>
+      No invoices yet
+    </h3>
+
+    <p>
+      Your tuition invoices will appear here.
+    </p>
+
+  </div>
+
+
+  <!-- =========================
+       INVOICES LIST
+  ========================== -->
+
+  <div
+    class="invoices-list"
+    *ngIf="
+      !isLoadingInvoices &&
+      !invoicesError &&
+      invoices.length > 0
+    ">
+
+    <div
+      class="invoice-item"
+      *ngFor="let invoice of invoices">
+
+      <!-- Invoice Header -->
+      <div class="invoice-item-header">
+
+        <div>
+
+          <span class="section-eyebrow">
+            Invoice
+          </span>
+
+          <h3>
+            {{ invoice.invoiceNumber }}
+          </h3>
+
+          <span class="request-id">
+            Tuition Request #{{ invoice.tuitionRequestId }}
+          </span>
+
+        </div>
+
+
+        <!-- Invoice Status -->
+        <span
+          class="status-badge"
+          [ngClass]="{
+            'status-paid':
+              invoice.invoiceStatusName === 'Paid',
+
+            'status-pending':
+              invoice.invoiceStatusName === 'Pending',
+
+            'status-cancelled':
+              invoice.invoiceStatusName === 'Cancelled',
+
+            'status-due':
+              invoice.invoiceStatusName === 'Due'
+          }">
+
+          {{ invoice.invoiceStatusName }}
+
+        </span>
+
+      </div>
+
+
+      <!-- Invoice Details -->
+      <div class="request-details">
+
+        <!-- Invoice Date -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            Invoice Date
+          </span>
+
+          <span class="detail-value">
+
+            {{
+              invoice.invoiceDate
+                ? (invoice.invoiceDate | date:'dd MMM yyyy')
+                : 'Not available'
+            }}
+
+          </span>
+
+        </div>
+
+
+        <!-- Due Date -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            Due Date
+          </span>
+
+          <span class="detail-value">
+
+            {{
+              invoice.dueDate
+                ? (invoice.dueDate | date:'dd MMM yyyy')
+                : 'Not available'
+            }}
+
+          </span>
+
+        </div>
+
+
+        <!-- Payment Terms -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            Payment Terms
+          </span>
+
+          <span class="detail-value">
+            {{ invoice.paymentTermsName }}
+          </span>
+
+        </div>
+
+
+        <!-- Monthly Fee -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            Monthly Fee
+          </span>
+
+          <span class="detail-value budget-value">
+            Rs. {{ invoice.monthlyFee | number }}
+          </span>
+
+        </div>
+
+
+        <!-- Invoice Amount -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            Invoice Amount
+          </span>
+
+          <span class="detail-value">
+            Rs. {{ invoice.invoiceAmount | number }}
+          </span>
+
+        </div>
+
+
+        <!-- Net Amount -->
+        <div class="detail-item">
+
+          <span class="detail-label">
+            Amount Payable
+          </span>
+
+          <span class="detail-value budget-value">
+            Rs. {{ invoice.netAmount | number }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- Invoice Footer -->
+      <div class="invoice-footer">
+
+        <div class="invoice-amount">
+
+          <span>
+            Total
+          </span>
+
+          <strong>
+            Rs. {{ invoice.netAmount | number }}
+          </strong>
+
+        </div>
+
+
+        <!-- Payment Action -->
+        <button
+  type="button"
+  class="invoice-pay-btn"
+  *ngIf="invoice.invoiceStatusName !== 'Paid'"
+  (click)="openPaymentModal(invoice)">
+
+  Pay Now
+
+</button>
+
+        <!-- Paid State -->
+        <div
+          class="invoice-paid"
+          *ngIf="
+            invoice.invoiceStatusName === 'Paid'
+          ">
+
+          ✓ Payment Completed
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</div>
+<!-- =====================================================
+     PAYMENT MODAL
+====================================================== -->
+
+<div
+  class="payment-modal-overlay"
+  *ngIf="showPaymentModal">
+
+  <div class="payment-modal">
+
+    <!-- Header -->
+    <div class="payment-modal-header">
+
+      <div>
+
+        <span class="section-eyebrow">
+          Billing & Payment
+        </span>
+
+        <h2>
+          Pay Invoice
+        </h2>
+
+        <p>
+          Complete your payment for this tuition invoice.
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="payment-modal-close"
+        (click)="closePaymentModal()"
+        [disabled]="isCreatingPayment">
+
+        ×
+
+      </button>
+
+    </div>
+
+
+    <!-- Invoice Summary -->
+    <div
+      class="payment-invoice-summary"
+      *ngIf="selectedInvoice">
+
+      <div>
+
+        <span class="detail-label">
+          Invoice
+        </span>
+
+        <strong>
+          {{ selectedInvoice.invoiceNumber }}
+        </strong>
+
+      </div>
+
+      <div>
+
+        <span class="detail-label">
+          Amount Payable
+        </span>
+
+        <strong class="payment-total">
+          Rs. {{ selectedInvoice.netAmount | number }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- Payment Form -->
+    <div class="payment-form">
+
+      <!-- Payment Method -->
+      <div class="form-group">
+
+        <label>
+          Payment Method
+        </label>
+
+        <select
+          [(ngModel)]="paymentMethodId">
+
+          <option [ngValue]="0">
+            Select Payment Method
+          </option>
+
+          <option [ngValue]="1">
+            Credit Card
+          </option>
+
+          <option [ngValue]="2">
+            Debit Card
+          </option>
+
+          <option [ngValue]="3">
+            Bank Transfer
+          </option>
+
+          <option [ngValue]="4">
+            Cash
+          </option>
+
+          <option [ngValue]="5">
+            Wallet
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- Payment Gateway -->
+      <div class="form-group">
+
+        <label>
+          Payment Gateway
+        </label>
+
+        <select
+          [(ngModel)]="paymentGatewayId">
+
+          <option [ngValue]="0">
+            Select Payment Gateway
+          </option>
+
+          <option [ngValue]="1">
+            Stripe
+          </option>
+
+          <option [ngValue]="2">
+            JazzCash
+          </option>
+
+          <option [ngValue]="3">
+            EasyPaisa
+          </option>
+
+          <option [ngValue]="4">
+            Bank Transfer
+          </option>
+
+          <option [ngValue]="5">
+            Cash
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- Transaction Reference -->
+      <div class="form-group">
+
+        <label>
+          Transaction Reference
+          <span class="optional-label">
+            Optional
+          </span>
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="transactionReference"
+          placeholder="Enter transaction/reference number" />
+
+      </div>
+
+
+      <!-- Message -->
+      <div
+        class="payment-message"
+        *ngIf="paymentMessage"
+        [class.success]="paymentMessageType === 'success'"
+        [class.error]="paymentMessageType === 'error'">
+
+        {{ paymentMessage }}
+
+      </div>
+
+
+      <!-- Actions -->
+      <div class="payment-modal-actions">
+
+        <button
+          type="button"
+          class="payment-cancel-btn"
+          (click)="closePaymentModal()"
+          [disabled]="isCreatingPayment">
+
+          Cancel
+
+        </button>
+
+
+        <button
+          type="button"
+          class="payment-submit-btn"
+          (click)="payInvoice()"
+          [disabled]="isCreatingPayment">
+
+          <span *ngIf="!isCreatingPayment">
+            Pay Rs. {{ selectedInvoice?.netAmount | number }}
+          </span>
+
+          <span *ngIf="isCreatingPayment">
+            Processing...
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

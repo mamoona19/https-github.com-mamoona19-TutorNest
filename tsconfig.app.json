@@ -7,7 +7,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/app/pages/tutor-dashboard"  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]
