@@ -1,0 +1,112 @@
+ <!-- DEMOS -->
+  <section class="demos-card">
+    <div class="card-header">
+      <div>
+        <span class="section-eyebrow">SCHEDULED SESSIONS</span>
+        <h2>My Demos</h2>
+        <p>Review demo schedules and confirm tutor availability.</p>
+      </div>
+      <div class="request-count">
+        <strong>{{ parentDemoRequests.length }}</strong>
+        <span>Demo{{ parentDemoRequests.length === 1 ? '' : 's' }}</span>
+      </div>
+    </div>
+
+    <div class="requests-loading" *ngIf="isLoadingDemos">
+      <div class="loading-spinner"></div>
+      <span>Loading your demos...</span>
+    </div>
+
+    <div class="no-requests"
+      *ngIf="!isLoadingDemos && parentDemoRequests.length === 0">
+      <div class="empty-icon">📅</div>
+      <h3>No demos scheduled</h3>
+      <p>Your scheduled tutor demos will appear here.</p>
+    </div>
+
+    <div class="demo-list"
+      *ngIf="!isLoadingDemos && parentDemoRequests.length > 0">
+
+      <div class="demo-item" *ngFor="let demo of parentDemoRequests">
+
+        <div class="demo-item-header">
+          <div>
+            <span class="section-eyebrow">DEMO #{{ demo.tutorDemoRequestId }}</span>
+            <h3>{{ demo.subjectName }} Tuition</h3>
+            <span class="request-id">Tuition Request #{{ demo.tuitionRequestId }}</span>
+          </div>
+          <span
+  class="status-badge"
+  [ngClass]="{
+    'status-completed': demo.demoStatusName?.toLowerCase() === 'completed',
+    'status-pending': demo.demoStatusName?.toLowerCase().includes('pending'),
+    'status-confirmed': demo.demoStatusName?.toLowerCase().includes('confirmed'),
+    'status-rejected': demo.demoStatusName?.toLowerCase().includes('rejected') ||
+                       demo.demoStatusName?.toLowerCase().includes('cancelled')
+  }">
+  {{ demo.demoStatusName }}
+</span>
+        </div>
+
+        <div class="request-details">
+          <div class="detail-item">
+            <span class="detail-label">Tutor</span>
+            <span class="detail-value">{{ demo.tutorFirstName }} {{ demo.tutorLastName }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Student</span>
+            <span class="detail-value">{{ demo.studentName }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Tuition Type</span>
+            <span class="detail-value">{{ demo.tuitionTypeName }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Location</span>
+            <span class="detail-value">{{ demo.cityName }}, {{ demo.areaName }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Monthly Budget</span>
+            <span class="detail-value budget-value">Rs. {{ demo.budget | number }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Request</span>
+            <span class="detail-value">#{{ demo.tuitionRequestId }}</span>
+          </div>
+        </div>
+
+        <div class="demo-schedule">
+          <div class="schedule-item">
+            <div class="schedule-icon">📅</div>
+            <div>
+              <span class="detail-label">Demo Date</span>
+              <strong>
+                {{ demo.scheduledDate ? (demo.scheduledDate | date:'EEE, dd MMM yyyy') : 'Not scheduled' }}
+              </strong>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-icon">🕐</div>
+            <div>
+              <span class="detail-label">Demo Time</span>
+              <strong>{{ demo.scheduledStartTime }} - {{ demo.scheduledEndTime }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-confirmation"
+          *ngIf="demo.demoStatusName?.toLowerCase() === 'tutor confirmed'">
+          <p>The tutor has confirmed availability. Please confirm that you agree with the scheduled demo.</p>
+          <button type="button" class="btn btn-primary"
+            (click)="confirmParentDemo(demo)"
+            [disabled]="confirmingDemoId === demo.tutorDemoRequestId">
+            {{
+              confirmingDemoId === demo.tutorDemoRequestId
+                ? 'Confirming...'
+                : 'Confirm Demo'
+            }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>

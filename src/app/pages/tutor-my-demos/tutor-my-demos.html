@@ -1,0 +1,221 @@
+
+<div class="demos-page">
+
+  <header class="page-header">
+    <div>
+      <span class="section-eyebrow">TUTORNEST · TUTOR PORTAL</span>
+      <h1>My Demos</h1>
+      <p>Manage your demo requests, submit availability and confirm scheduled sessions.</p>
+    </div>
+
+    <div class="demo-total">
+      <strong>{{ myDemoRequests.length }}</strong>
+      <span>Total Demos</span>
+    </div>
+  </header>
+
+  @if (loading) {
+    <div class="empty-state">
+      <p>Loading your demo requests...</p>
+    </div>
+  }
+  @else if (errorMessage) {
+    <div class="error-message">
+      {{ errorMessage }}
+      <button type="button" (click)="loadMyDemoRequests()">Try Again</button>
+    </div>
+  }
+  @else if (myDemoRequests.length === 0) {
+    <div class="empty-state">
+      <h3>No demo requests yet</h3>
+      <p>Your demo requests will appear here when a parent requests a demo.</p>
+    </div>
+  }
+  @else {
+
+    <div class="demo-list">
+
+      @for (demo of myDemoRequests; track demo.tutorDemoRequestId) {
+
+        <article class="demo-card">
+
+          <div class="demo-heading">
+            <div>
+              <span class="request-label">
+                Demo #{{ demo.tutorDemoRequestId }}
+              </span>
+              <h2>{{ demo.subjectName }} Tuition</h2>
+            </div>
+
+            <span class="status-badge" [ngClass]="getStatusClass(demo.demoStatusName)">
+              {{ demo.demoStatusName }}
+            </span>
+          </div>
+
+          <div class="demo-details">
+
+            <div class="detail-item">
+              <span>Student</span>
+              <strong>{{ demo.studentName }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Tuition Type</span>
+              <strong>{{ demo.tuitionTypeName }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Location</span>
+              <strong>
+                {{ demo.cityName }}
+                @if (demo.areaName) {
+                  , {{ demo.areaName }}
+                }
+              </strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Budget</span>
+              <strong>Rs. {{ demo.budget }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Preferred Start</span>
+              <strong>{{ demo.preferredStartDate | date:'mediumDate' }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Requested On</span>
+              <strong>{{ demo.requestedDate | date:'mediumDate' }}</strong>
+            </div>
+
+          </div>
+
+          @if (demo.parentRemarks) {
+            <div class="remarks">
+              <span>Parent Remarks</span>
+              <p>{{ demo.parentRemarks }}</p>
+            </div>
+          }
+
+          <!-- Availability Form -->
+          @if (demo.demoStatusName?.toLowerCase() === 'pending admin review') {
+
+            <div class="availability-form">
+
+              <div class="form-heading">
+                <h3>Submit Your Availability</h3>
+                <p>Select a date and time when you are available for this demo.</p>
+              </div>
+
+              <div class="availability-fields">
+
+                <div class="form-group">
+                  <label>Available Date *</label>
+                  <input
+                    type="date"
+                    [(ngModel)]="availabilityForms[demo.tutorDemoRequestId].availableDate"
+                    [min]="availabilityMinDate">
+                </div>
+
+                <div class="form-group">
+                  <label>Start Time *</label>
+                  <input
+                    type="time"
+                    [(ngModel)]="availabilityForms[demo.tutorDemoRequestId].startTime">
+                </div>
+
+                <div class="form-group">
+                  <label>End Time *</label>
+                  <input
+                    type="time"
+                    [(ngModel)]="availabilityForms[demo.tutorDemoRequestId].endTime">
+                </div>
+
+                <div class="form-group full-width">
+                  <label>Remarks (Optional)</label>
+                  <textarea
+                    [(ngModel)]="availabilityForms[demo.tutorDemoRequestId].tutorRemarks"
+                    placeholder="Enter any additional information"></textarea>
+                </div>
+
+              </div>
+
+              <button
+                type="button"
+                class="primary-btn"
+                [disabled]="availabilityLoading[demo.tutorDemoRequestId]"
+                (click)="submitDemoAvailability(demo)">
+                {{
+                  availabilityLoading[demo.tutorDemoRequestId]
+                    ? 'Submitting...'
+                    : 'Submit Availability'
+                }}
+              </button>
+
+              @if (availabilityMessages[demo.tutorDemoRequestId]) {
+                <p class="success-message">
+                  {{ availabilityMessages[demo.tutorDemoRequestId] }}
+                </p>
+              }
+
+              @if (availabilityErrors[demo.tutorDemoRequestId]) {
+                <p class="error-text">
+                  {{ availabilityErrors[demo.tutorDemoRequestId] }}
+                </p>
+              }
+
+            </div>
+          }
+
+          <!-- Scheduled Demo -->
+          @if (
+            demo.demoStatusName?.toLowerCase() === 'scheduled' ||
+            demo.demoStatusName?.toLowerCase() === 'tutor confirmed' ||
+            demo.demoStatusName?.toLowerCase() === 'parent confirmed'
+          ) {
+
+            <div class="scheduled-demo">
+
+              <h3>Scheduled Demo Details</h3>
+
+              <div class="demo-details">
+
+                <div class="detail-item">
+                  <span>Scheduled Date</span>
+                  <strong>{{ demo.scheduledDate | date:'dd MMM yyyy' }}</strong>
+                </div>
+
+                <div class="detail-item">
+                  <span>Scheduled Time</span>
+                  <strong>
+                    {{ demo.scheduledStartTime }} - {{ demo.scheduledEndTime }}
+                  </strong>
+                </div>
+
+              </div>
+
+              @if (demo.demoStatusName?.toLowerCase() === 'scheduled') {
+
+                <div class="confirm-action">
+                  <p>Please confirm that you are available for this scheduled demo.</p>
+
+                  <button
+                    type="button"
+                    class="primary-btn"
+                    (click)="confirmDemo(demo)">
+                    Confirm Availability
+                  </button>
+                </div>
+              }
+
+            </div>
+          }
+
+        </article>
+      }
+
+    </div>
+  }
+
+</div>

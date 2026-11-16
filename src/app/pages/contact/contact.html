@@ -1,0 +1,271 @@
+
+<main class="contact-page">
+
+  <!-- Hero -->
+  <section class="contact-hero">
+    <div class="contact-container">
+      <span class="contact-label">CONTACT TUTORNEST</span>
+
+      <h1>We're here to <span>help you.</span></h1>
+
+      <p>
+        Have a question about finding a tutor, joining TutorNest,
+        or using our platform? Send us a message and let us know
+        how we can assist you.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact Content -->
+  <section class="contact-main">
+    <div class="contact-container contact-layout">
+
+      <!-- Contact Information -->
+      <aside class="contact-info">
+        <span class="contact-label">GET IN TOUCH</span>
+        <h2>Let's talk about your needs.</h2>
+
+        <p class="contact-info-description">
+          Whether you're a parent looking for a tutor or a tutor
+          exploring opportunities, we're here to guide you.
+        </p>
+
+        <div class="contact-info-list">
+
+          <div class="contact-info-item">
+            <div class="contact-icon">✉</div>
+            <div>
+              <h3>Email Support</h3>
+              <p>For general questions and assistance</p>
+              <span class="contact-detail">
+                Contact details to be added
+              </span>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <div class="contact-icon">⌖</div>
+            <div>
+              <h3>Our Service</h3>
+              <p>Connecting parents and tutors</p>
+              <span class="contact-detail">
+                Online and home tuition
+              </span>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <div class="contact-icon">◷</div>
+            <div>
+              <h3>Support Requests</h3>
+              <p>Questions about your account or tuition request</p>
+              <span class="contact-detail">
+                Submit the form on this page
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="contact-note">
+          <span>✓</span>
+          <p>
+            For tutor assignments and tuition requests, please use
+            your TutorNest account so your request can be handled
+            through the platform's process.
+          </p>
+        </div>
+      </aside>
+
+      <!-- Contact Form -->
+      <div class="contact-form-card">
+        <div class="contact-form-heading">
+          <h2>Send us a message</h2>
+          <p>Fill in the details below to prepare your inquiry.</p>
+        </div>
+
+        <form #contactForm="ngForm" (ngSubmit)="submitContact(contactForm)">
+
+          <div class="contact-form-row">
+            <div class="contact-field">
+              <label for="contactName">Full Name *</label>
+              <input
+                id="contactName"
+                type="text"
+                name="name"
+                [(ngModel)]="contact.fullName"
+                (ngModelChange)="onFormChange(contactForm)"
+                #nameField="ngModel"
+                placeholder="Enter your full name"
+                required
+                minlength="2"
+                maxlength="100"
+                autocomplete="name"
+              />
+              @if (nameField.invalid && nameField.touched) {
+                <small class="field-error">
+                  Please enter your name (at least 2 characters).
+                </small>
+              }
+            </div>
+
+            <div class="contact-field">
+              <label for="contactEmail">Email Address *</label>
+              <input
+                id="contactEmail"
+                type="email"
+                name="email"
+                [(ngModel)]="contact.email"
+                (ngModelChange)="onFormChange(contactForm)"
+                #emailField="ngModel"
+                placeholder="you@example.com"
+                required
+                email
+                maxlength="150"
+                autocomplete="email"
+              />
+              @if (emailField.invalid && emailField.touched) {
+                <small class="field-error">
+                  Please enter a valid email address.
+                </small>
+              }
+            </div>
+          </div>
+
+          <div class="contact-field">
+            <label for="contactRole">I am a *</label>
+            <select
+              id="contactRole"
+              name="role"
+              [(ngModel)]="contact.roleName"
+              (ngModelChange)="onFormChange(contactForm)"
+              #roleField="ngModel"
+              required
+            >
+              <option value="" disabled>Select your role</option>
+              <option value="Parent">Parent / Student</option>
+              <option value="Tutor">Tutor</option>
+              <option value="Other">Other</option>
+            </select>
+            @if (roleField.invalid && roleField.touched) {
+              <small class="field-error">Please select your role.</small>
+            }
+          </div>
+
+          <div class="contact-field">
+            <label for="contactSubject">Subject *</label>
+            <select
+              id="contactSubject"
+              name="subject"
+              [(ngModel)]="contact.subject"
+              (ngModelChange)="onFormChange(contactForm)"
+              #subjectField="ngModel"
+              required
+            >
+              <option value="" disabled>Select a subject</option>
+              <option value="General Inquiry">General Inquiry</option>
+              <option value="Finding a Tutor">Finding a Tutor</option>
+              <option value="Tutor Registration">Tutor Registration</option>
+              <option value="Account Support">Account Support</option>
+              <option value="Payment Inquiry">Payment Inquiry</option>
+              <option value="Technical Issue">Technical Issue</option>
+              <option value="Other">Other</option>
+            </select>
+            @if (subjectField.invalid && subjectField.touched) {
+              <small class="field-error">Please select a subject.</small>
+            }
+          </div>
+
+          <div class="contact-field">
+            <label for="contactMessage">Your Message *</label>
+            <textarea
+              id="contactMessage"
+              name="message"
+              [(ngModel)]="contact.message"
+              (ngModelChange)="onFormChange(contactForm)"
+              #messageField="ngModel"
+              placeholder="Tell us how we can help..."
+              rows="5"
+              required
+              minlength="10"
+              maxlength="2000"
+            ></textarea>
+            <div class="contact-message-meta">
+              @if (messageField.invalid && messageField.touched) {
+                <small class="field-error">
+                  Please enter at least 10 characters.
+                </small>
+              } @else {
+                <small>Provide enough detail to help us understand your inquiry.</small>
+              }
+              <span>{{ contact.message.length }}/2000</span>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="contact-submit"
+            [disabled]="isSubmitting"
+          >
+            {{ isSubmitting ? 'Please wait...' : 'Submit Inquiry' }}
+            @if (!isSubmitting) {
+              <span>→</span>
+            }
+          </button>
+
+          @if (formMessage) {
+            <div
+              class="contact-feedback"
+              [class.feedback-error]="isError"
+              role="status"
+              aria-live="polite"
+            >
+              {{ formMessage }}
+            </div>
+          }
+
+          <p class="contact-privacy">
+            Please do not include passwords, payment card details,
+            or other sensitive information in your message.
+          </p>
+
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Help Section -->
+  <section class="contact-help">
+    <div class="contact-container">
+      <span class="contact-label">NEED HELP?</span>
+      <h2>Looking for something specific?</h2>
+
+      <div class="contact-help-grid">
+
+        <a routerLink="/find-tutor" class="contact-help-card">
+          <span class="help-card-icon">⌕</span>
+          <h3>Find a Tutor</h3>
+          <p>Explore tutors according to your learning needs.</p>
+          <span class="help-card-link">Explore tutors →</span>
+        </a>
+
+        <a routerLink="/request-tutor" class="contact-help-card">
+          <span class="help-card-icon">＋</span>
+          <h3>Request a Tutor</h3>
+          <p>Share your tuition requirements with TutorNest.</p>
+          <span class="help-card-link">Make a request →</span>
+        </a>
+
+        <a routerLink="/signup" class="contact-help-card">
+          <span class="help-card-icon">♙</span>
+          <h3>Join TutorNest</h3>
+          <p>Create an account to access the platform.</p>
+          <span class="help-card-link">Get started →</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+</main>

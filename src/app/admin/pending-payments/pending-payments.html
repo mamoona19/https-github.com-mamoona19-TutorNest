@@ -1,0 +1,121 @@
+
+<div class="payments-page">
+
+  <header class="page-header">
+    <div>
+      <span class="eyebrow">ADMINISTRATION</span>
+      <h1>Pending Payments</h1>
+      <p>Review submitted payments and verify receipts or transfers.</p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-btn"
+      (click)="loadPendingPayments()"
+      [disabled]="isLoading">
+      {{ isLoading ? 'Refreshing...' : 'Refresh' }}
+    </button>
+  </header>
+
+  <div class="alert success" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+
+  <div class="alert error" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <section class="payments-card">
+
+    <div class="section-header">
+      <div>
+        <h2>Payment Verification Queue</h2>
+        <p>Payments awaiting admin verification</p>
+      </div>
+
+      <span class="count">{{ payments.length }} pending</span>
+    </div>
+
+    <div class="loading-state" *ngIf="isLoading">
+      Loading pending payments...
+    </div>
+
+    <div
+      class="empty-state"
+      *ngIf="!isLoading && !errorMessage && payments.length === 0">
+
+      <div class="empty-icon">✓</div>
+      <h3>No pending payments</h3>
+      <p>New payments awaiting verification will appear here.</p>
+    </div>
+
+    <div
+      class="table-wrapper"
+      *ngIf="!isLoading && payments.length > 0">
+
+      <table>
+        <thead>
+          <tr>
+            <th>Invoice</th>
+            <th>Amount</th>
+            <th>Payment Method</th>
+            <th>Transaction Reference</th>
+            <th>Submitted</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let payment of payments">
+            <td>
+              <strong>{{ payment.invoiceNumber }}</strong>
+              <small>Payment #{{ payment.paymentId }}</small>
+            </td>
+
+            <td class="amount">
+              {{ payment.currencyCode }}
+              {{ payment.amount | number:'1.2-2' }}
+            </td>
+
+            <td>
+              <strong>{{ payment.paymentMethodName }}</strong>
+              <small>{{ payment.paymentGatewayName }}</small>
+            </td>
+
+            <td>
+              {{ payment.transactionReference || 'Not provided' }}
+            </td>
+
+            <td>
+              {{ payment.paymentDate
+                ? (payment.paymentDate | date:'dd MMM yyyy, h:mm a')
+                : (payment.createdDate | date:'dd MMM yyyy, h:mm a') }}
+            </td>
+
+            <td>
+              <span class="status-badge">
+                {{ payment.paymentStatusName }}
+              </span>
+            </td>
+
+            <td>
+              <button
+                type="button"
+                class="verify-btn"
+                (click)="verifyPayment(payment)"
+                [disabled]="verifyingPaymentId !== null">
+
+                {{ verifyingPaymentId === payment.paymentId
+                  ? 'Verifying...'
+                  : 'Verify Payment' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+</div>
+

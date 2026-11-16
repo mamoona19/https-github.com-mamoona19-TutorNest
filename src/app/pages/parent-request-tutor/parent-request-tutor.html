@@ -1,0 +1,212 @@
+
+<section class="request-section">
+
+  <div class="request-section-header">
+    <div>
+      <span class="section-eyebrow">GET STARTED</span>
+      <h2>Request a Tutor</h2>
+      <p>Tell us what your child needs and our team will help find a suitable tutor.</p>
+    </div>
+
+    <button
+      type="button"
+      class="request-toggle-btn"
+      (click)="showRequestForm = !showRequestForm">
+      <span *ngIf="!showRequestForm">+ New Request</span>
+      <span *ngIf="showRequestForm">× Close Form</span>
+    </button>
+  </div>
+
+  <div class="request-card" *ngIf="showRequestForm">
+
+    <div class="card-header">
+      <div>
+        <h2>Tuition Request Details</h2>
+        <p>Complete the details below to submit your request.</p>
+      </div>
+    </div>
+
+    <form [formGroup]="requestForm" (ngSubmit)="submitRequest()">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="studentId">Select Child</label>
+
+          <select id="studentId" formControlName="studentId">
+            <option value="">Select Child</option>
+
+            <option *ngFor="let student of students"
+              [value]="student.studentId">
+              {{ student.studentName }}
+            </option>
+          </select>
+
+          <small class="error-text"
+            *ngIf="requestForm.get('studentId')?.touched && requestForm.get('studentId')?.hasError('required')">
+            Please select a child.
+          </small>
+
+          <small class="error-text" *ngIf="studentError">
+            {{ studentError }}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="tuitionTypeId">Tuition Type</label>
+
+          <select id="tuitionTypeId" formControlName="tuitionTypeId">
+            <option value="1">Home Tuition</option>
+            <option value="2">Online Tuition</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="subjectId">Subject</label>
+
+          <select id="subjectId" formControlName="subjectId">
+            <option value="">Select Subject</option>
+
+            <option *ngFor="let subject of subjects"
+              [value]="subject.subjectId">
+              {{ subject.subjectName }}
+            </option>
+          </select>
+
+          <small class="error-text"
+            *ngIf="requestForm.get('subjectId')?.touched && requestForm.get('subjectId')?.hasError('required')">
+            Please select a subject.
+          </small>
+
+          <small class="error-text" *ngIf="subjectError">
+            {{ subjectError }}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="cityId">City</label>
+
+          <select
+            id="cityId"
+            formControlName="cityId"
+            (change)="loadAreas(+$any($event.target).value)">
+
+            <option value="">Select City</option>
+
+            <option *ngFor="let city of cities"
+              [value]="city.cityId">
+              {{ city.cityName }}
+            </option>
+
+          </select>
+
+          <small class="error-text" *ngIf="cityError">
+            {{ cityError }}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="areaId">Area</label>
+
+          <select id="areaId" formControlName="areaId">
+            <option value="">Select Area</option>
+
+            <option *ngFor="let area of areas"
+              [value]="area.areaId">
+              {{ area.areaName }}
+            </option>
+
+          </select>
+
+          <small class="error-text"
+            *ngIf="requestForm.get('areaId')?.touched && requestForm.get('areaId')?.hasError('required')">
+            Please select an area.
+          </small>
+
+          <small class="error-text" *ngIf="areaError">
+            {{ areaError }}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="budget">Monthly Budget (Rs.)</label>
+
+          <input
+            id="budget"
+            type="number"
+            min="1"
+            formControlName="budget"
+            placeholder="Enter monthly budget" />
+
+          <small class="error-text"
+            *ngIf="requestForm.get('budget')?.touched && requestForm.get('budget')?.hasError('required')">
+            Please enter your monthly budget.
+          </small>
+
+          <small class="error-text"
+            *ngIf="requestForm.get('budget')?.touched && requestForm.get('budget')?.hasError('min')">
+            Budget must be greater than 0.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="preferredTutorGenderId">Preferred Tutor Gender</label>
+
+          <select id="preferredTutorGenderId"
+            formControlName="preferredTutorGenderId">
+
+            <option value="0">No Preference</option>
+            <option value="1">Male</option>
+            <option value="2">Female</option>
+
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="preferredStartDate">Preferred Start Date</label>
+
+          <input
+            id="preferredStartDate"
+            type="date"
+            formControlName="preferredStartDate" />
+
+          <small class="error-text"
+            *ngIf="requestForm.get('preferredStartDate')?.touched && requestForm.get('preferredStartDate')?.hasError('required')">
+            Please select a start date.
+          </small>
+        </div>
+
+      </div>
+
+      <div class="form-group full-width">
+        <label for="specialInstructions">Special Instructions</label>
+
+        <textarea
+          id="specialInstructions"
+          rows="3"
+          formControlName="specialInstructions"
+          placeholder="Share your child's class, learning goals or any special requirements...">
+        </textarea>
+      </div>
+
+      <div class="success-message" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="submit-btn" [disabled]="loading">
+
+          <span *ngIf="!loading">Submit Tuition Request →</span>
+          <span *ngIf="loading">Submitting...</span>
+
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</section>

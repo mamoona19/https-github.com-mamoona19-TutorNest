@@ -1,5 +1,25 @@
-<app-navbar></app-navbar>
 
-<main>
-  <router-outlet></router-outlet>
-</main>
+<div
+  class="app-layout"
+  [class.admin-layout]="isAdminRoute"
+  [class.parent-layout]="isParentRoute"
+  [class.tutor-layout]="isTutorRoute">
+
+  @if (isAdminRoute) {
+    <app-admin-sidebar></app-admin-sidebar>
+  }
+  @else if (isParentRoute) {
+    <app-parent-sidebar></app-parent-sidebar>
+  }
+  @else if (isTutorRoute) {
+    <app-tutor-sidebar></app-tutor-sidebar>
+  }
+  @else {
+    <app-navbar></app-navbar>
+  }
+
+  <main class="app-content">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

@@ -1,6 +1,9 @@
 import { Component, OnInit,ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 
 import {
@@ -37,6 +40,10 @@ import {
 } from '../../Services/area.service';
 
 import { ParentService,Invoice,CreatePaymentRequest } from '../../Services/parent.service';
+import {
+  PaymentAccountService,
+  PaymentAccount
+} from '../../Services/payment-account.service';
 
 
 @Component({
@@ -52,6 +59,9 @@ import { ParentService,Invoice,CreatePaymentRequest } from '../../Services/paren
   styleUrl: './parent-dashboard.css'
 })
 export class ParentDashboard implements OnInit {
+  confirmingDemoId: number | null = null;
+  showAllRequests = false;
+  showAllInvoices = false;
     // =====================================================
   // INVOICES
   // =====================================================
@@ -153,7 +163,226 @@ demoMessageType: 'success' | 'error' = 'success';
   isLoadingRequests = false;
   requestsError = '';
 
+// =====================================================
+// MY TUITION REQUESTS - FILTER & PAGINATION
+// =====================================================
 
+selectedRequestFilter: 'All' | 'Pending' | 'Active' | 'Completed' = 'All';
+
+currentRequestPage = 1;
+requestsPerPage = 2;
+
+// Summary counts
+
+get matchedRequestsCount(): number {
+  return this.myRequests.filter(r =>
+    (r.statusName || '').toLowerCase().includes('matched')
+  ).length;
+}
+
+get cancelledRequestsCount(): number {
+  return this.myRequests.filter(r =>
+    (r.statusName || '').toLowerCase().includes('cancelled')
+  ).length;
+}
+
+// Demo Analytics
+get totalDemosCount(): number {
+  return this.parentDemoRequests.length;
+}
+
+get pendingDemosCount(): number {
+  return this.parentDemoRequests.filter(d =>
+    (d.demoStatusName || '').toLowerCase().includes('pending')
+  ).length;
+}
+
+get scheduledDemosCount(): number {
+  return this.parentDemoRequests.filter(d =>
+    (d.demoStatusName || '').toLowerCase().includes('scheduled')
+  ).length;
+}
+
+get completedDemosCount(): number {
+  return this.parentDemoRequests.filter(d =>
+    (d.demoStatusName || '').toLowerCase().includes('completed')
+  ).length;
+}
+
+get totalRequests(): number {
+  return this.myRequests.length;
+}
+
+get pendingRequestsCount(): number {
+  return this.myRequests.filter(r =>
+    (r.statusName || '').toLowerCase().includes('pending')
+  ).length;
+}
+
+get activeRequestsCount(): number {
+  return this.myRequests.filter(r =>
+    (r.statusName || '').toLowerCase().includes('active')
+  ).length;
+}
+
+get completedRequestsCount(): number {
+  return this.myRequests.filter(r =>
+    (r.statusName || '').toLowerCase().includes('completed')
+  ).length;
+}
+
+// Tutor Applications Analytics
+allTutorApplications: TutorApplication[] = [];
+isLoadingApplicationAnalytics = false;
+
+get totalApplicationsCount(): number {
+  return this.allTutorApplications.length;
+}
+
+get acceptedApplicationsCount(): number {
+  return this.allTutorApplications.filter(a =>
+    (a.applicationStatus || '').toLowerCase().includes('accepted')
+  ).length;
+}
+
+get pendingApplicationsCount(): number {
+  return this.allTutorApplications.filter(a =>
+    (a.applicationStatus || '').toLowerCase().includes('pending')
+  ).length;
+}
+
+get rejectedApplicationsCount(): number {
+  return this.allTutorApplications.filter(a =>
+    (a.applicationStatus || '').toLowerCase().includes('rejected')
+  ).length;
+}
+
+// Filter requests
+get filteredRequests(): MyTuitionRequest[] {
+
+  if (this.selectedRequestFilter === 'All') {
+    return this.myRequests;
+  }
+
+  return this.myRequests.filter(request => {
+
+    const status = (request.statusName || '').toLowerCase();
+
+    switch (this.selectedRequestFilter) {
+
+      case 'Pending':
+        return status.includes('pending');
+
+      case 'Active':
+        return status.includes('active');
+
+      case 'Completed':
+        return status.includes('completed');
+
+      default:
+        return true;
+    }
+  });
+}
+
+// Paginated requests
+get paginatedRequests(): MyTuitionRequest[] {
+
+  const startIndex =
+    (this.currentRequestPage - 1) * this.requestsPerPage;
+
+  return this.filteredRequests.slice(
+    startIndex,
+    startIndex + this.requestsPerPage
+  );
+}
+
+get totalRequestPages(): number {
+  return Math.ceil(
+    this.filteredRequests.length / this.requestsPerPage
+  );
+}
+
+get requestStartNumber(): number {
+  if (this.filteredRequests.length === 0) {
+    return 0;
+  }
+
+  return (this.currentRequestPage - 1) *
+    this.requestsPerPage + 1;
+}
+
+get requestEndNumber(): number {
+  return Math.min(
+    this.currentRequestPage * this.requestsPerPage,
+    this.filteredRequests.length
+  );
+}
+
+ // Invoice Analytics
+get totalInvoicesCount(): number {
+  return this.invoices.length;
+}
+
+get pendingInvoicesCount(): number {
+  return this.invoices.filter(i =>
+    (i.invoiceStatusName || '').toLowerCase().includes('pending')
+  ).length;
+}
+
+get paidInvoicesCount(): number {
+  return this.invoices.filter(i =>
+    (i.invoiceStatusName || '').toLowerCase() === 'paid'
+  ).length;
+}
+
+get overdueInvoicesCount(): number {
+  return this.invoices.filter(i =>
+    (i.invoiceStatusName || '').toLowerCase().includes('overdue')
+  ).length;
+}
+
+// Payment Summary
+get totalPaidAmount(): number {
+  return this.invoices
+    .filter(i =>
+      (i.invoiceStatusName || '').toLowerCase() === 'paid'
+    )
+    .reduce((total, i) => total + Number(i.netAmount || 0), 0);
+}
+
+get pendingPaymentAmount(): number {
+  return this.invoices
+    .filter(i => {
+      const status = (i.invoiceStatusName || '').toLowerCase();
+      return status === 'pending' || status === 'overdue';
+    })
+    .reduce((total, i) => total + Number(i.netAmount || 0), 0);
+}
+
+// Change filter
+filterRequests(
+  filter: 'All' | 'Pending' | 'Active' | 'Completed'
+): void {
+
+  this.selectedRequestFilter = filter;
+  this.currentRequestPage = 1;
+
+  // Close expanded applications when changing filter
+  this.closeTutorApplications();
+}
+
+// Pagination
+changeRequestPage(page: number): void {
+
+  if (page < 1 || page > this.totalRequestPages) {
+    return;
+  }
+
+  this.currentRequestPage = page;
+
+  this.closeTutorApplications();
+}
   // =====================================================
   // TUTOR APPLICATIONS
   // =====================================================
@@ -168,6 +397,14 @@ demoMessageType: 'success' | 'error' = 'success';
   parentDemoRequests: any[] = [];
 isLoadingDemos = false;
 
+// =====================================================
+// MANUAL PAYMENT ACCOUNT DETAILS
+// =====================================================
+
+paymentAccounts: PaymentAccount[] = [];
+isLoadingPaymentAccounts = false;
+paymentAccountsError = '';
+
 
   // =====================================================
   // CONSTRUCTOR
@@ -181,8 +418,9 @@ isLoadingDemos = false;
     private cityService: CityService,
     private areaService: AreaService,
     private parentService: ParentService,
-   
-    private cdr: ChangeDetectorRef
+    private paymentAccountService: PaymentAccountService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {
 
     // Get logged-in user ID
@@ -259,6 +497,7 @@ ngOnInit(): void {
   this.loadParentId();
   this.loadParentDemoRequests();
   this.loadInvoices();
+  this.loadActivePaymentAccounts();
 }
 
   // =====================================================
@@ -284,6 +523,7 @@ ngOnInit(): void {
         );
 
         this.myRequests = requests || [];
+        this.loadApplicationAnalytics();
         this.cdr.detectChanges();
 
         console.log(
@@ -821,6 +1061,60 @@ this.cdr.detectChanges();
     });
 }
 
+loadApplicationAnalytics(): void {
+
+  if (this.myRequests.length === 0) {
+    this.allTutorApplications = [];
+    return;
+  }
+
+  this.isLoadingApplicationAnalytics = true;
+
+  const requests = this.myRequests.map(request =>
+    this.tuitionRequestService
+      .getTutorApplications(request.tuitionRequestId)
+      .pipe(
+        catchError(error => {
+          console.error(
+            `Applications error for request ${request.tuitionRequestId}:`,
+            error
+          );
+          return of([]);
+        })
+      )
+  );
+
+  forkJoin(requests).subscribe({
+
+    next: (results) => {
+
+      this.allTutorApplications = results.flat();
+
+      this.isLoadingApplicationAnalytics = false;
+
+      this.cdr.detectChanges();
+
+      console.log(
+        'ALL PARENT APPLICATIONS:',
+        this.allTutorApplications
+      );
+    },
+
+    error: (error) => {
+
+      console.error(
+        'APPLICATION ANALYTICS ERROR:',
+        error
+      );
+
+      this.allTutorApplications = [];
+      this.isLoadingApplicationAnalytics = false;
+
+      this.cdr.detectChanges();
+    }
+  });
+}
+
 
   // =====================================================
   // CLOSE TUTOR APPLICATIONS
@@ -1254,4 +1548,85 @@ payInvoice(): void {
     });
 }
 
+// =====================================================
+// LOAD ACTIVE PAYMENT ACCOUNTS
+// =====================================================
+
+loadActivePaymentAccounts(): void {
+  this.isLoadingPaymentAccounts = true;
+  this.paymentAccountsError = '';
+
+  this.paymentAccountService
+    .getActivePaymentAccounts()
+    .subscribe({
+      next: (response: any) => {
+        this.paymentAccounts =
+          response?.success && Array.isArray(response.data)
+            ? response.data
+            : [];
+
+        this.isLoadingPaymentAccounts = false;
+        this.cdr.detectChanges();
+      },
+
+      error: (error: any) => {
+        console.error(
+          'ACTIVE PAYMENT ACCOUNTS ERROR:',
+          error
+        );
+
+        this.paymentAccounts = [];
+        this.isLoadingPaymentAccounts = false;
+        this.paymentAccountsError =
+          'Unable to load payment account details. Please try again later.';
+
+        this.cdr.detectChanges();
+      }
+    });
+}
+confirmParentDemo(demo: any): void {
+
+  const demoId = Number(demo.tutorDemoRequestId);
+
+  if (!demoId || this.confirmingDemoId !== null) {
+    return;
+  }
+
+  if (demo.demoStatusName?.toLowerCase() !== 'tutor confirmed') {
+    return;
+  }
+
+  if (!confirm('Are you sure you want to confirm this demo?')) {
+    return;
+  }
+
+  this.confirmingDemoId = demoId;
+
+  this.parentService.confirmParentDemo(demoId).subscribe({
+
+    next: (response) => {
+      alert(response.message || 'Demo confirmed successfully.');
+
+      this.loadParentDemoRequests();
+
+      this.confirmingDemoId = null;
+    },
+
+    error: (error) => {
+      console.error('PARENT DEMO CONFIRMATION ERROR:', error);
+
+      alert(
+        error.error?.message ||
+        'Unable to confirm demo. Please try again.'
+      );
+
+      this.confirmingDemoId = null;
+    }
+
+  });
+}
+
+ goToProfile(): void {
+  this.router.navigate(['/parent/profile']);
+}
 }

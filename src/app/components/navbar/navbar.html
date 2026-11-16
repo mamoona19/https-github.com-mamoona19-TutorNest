@@ -1,3 +1,4 @@
+
 <nav class="navbar">
   <div class="navbar-container">
 
@@ -5,37 +6,68 @@
       Tutor<span>Nest</span>
     </a>
 
-    <div class="nav-links">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-        Home
-      </a>
+    <!-- GUEST -->
+    @if (!isLoggedIn) {
+      <div class="nav-links">
+        <a routerLink="/" routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: true }">Home</a>
+        <a routerLink="/find-tutor">Find Tutors</a>
+        <a routerLink="/request-tutor">Request a Tutor</a>
+        <a routerLink="/about">About Us</a>
+        <a routerLink="/contact">Contact</a>
+      </div>
 
-      <a routerLink="/find-tutor" routerLinkActive="active">
-        Find a Tutor
-      </a>
+      <div class="nav-actions">
+        <a routerLink="/login" class="login-btn">Login</a>
+        <a routerLink="/signup" class="signup-btn">Sign Up</a>
+      </div>
+    }
 
-      <a routerLink="/request-tutor" routerLinkActive="active">
-        Request a Tutor
-      </a>
+    <!-- PARENT -->
+    @if (isParent) {
+      <div class="nav-links">
+        <a routerLink="/" routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: true }">Home</a>
+        <a routerLink="/find-tutor">Find Tutors</a>
+        <a routerLink="/request-tutor">Request a Tutor</a>
+        <a routerLink="/parent/dashboard">Dashboard</a>
+      </div>
 
-      <a routerLink="/about" routerLinkActive="active">
-        About Us
-      </a>
+      <div class="nav-actions">
+        <span class="user-greeting">Hi, {{ getFirstName() }}</span>
+        <button type="button" class="login-btn" (click)="logout()">Logout</button>
+      </div>
+    }
 
-      <a routerLink="/contact" routerLinkActive="active">
-        Contact
-      </a>
-    </div>
+    <!-- TUTOR -->
+    @if (isTutor) {
+      <div class="nav-links">
+        <a routerLink="/">Home</a>
+        <a routerLink="/tutor/dashboard">Dashboard</a>
+        <a routerLink="/tutor/available-requests">Available Requests</a>
+        <a routerLink="/tutor/my-applications">My Applications</a>
+      </div>
 
-    <div class="nav-actions">
-      <a routerLink="/login" class="login-btn">
-        Login
-      </a>
+      <div class="nav-actions">
+        <span class="user-greeting">Hi, {{ getFirstName() }}</span>
+        <button type="button" class="login-btn" (click)="logout()">Logout</button>
+      </div>
+    }
 
-      <a routerLink="/signup" class="signup-btn">
-        Sign up
-      </a>
-    </div>
+    <!-- ADMIN -->
+    @if (isAdmin) {
+      <div class="nav-links">
+        <a routerLink="/">Home</a>
+        <a routerLink="/find-tutor">Find Tutors</a>
+        <a routerLink="/about">About Us</a>
+        <a routerLink="/contact">Contact</a>
+      </div>
+
+      <div class="nav-actions">
+        <a routerLink="/admin/dashboard" class="login-btn">Admin Dashboard</a>
+        <button type="button" class="signup-btn" (click)="logout()">Logout</button>
+      </div>
+    }
 
   </div>
 </nav>

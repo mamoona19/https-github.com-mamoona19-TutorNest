@@ -1,0 +1,226 @@
+
+<div class="request-page">
+  <div class="request-container">
+
+    <div class="request-heading">
+      <span class="eyebrow">FIND THE RIGHT TUTOR</span>
+      <h1>Request a Tutor</h1>
+      <p>
+        Tell us about your learning requirements. Our team will help
+        you find a suitable, verified tutor.
+      </p>
+    </div>
+
+    <form [formGroup]="requestForm" (ngSubmit)="submitRequest()"
+          novalidate>
+
+      <h2>Student Information</h2>
+
+      <div class="form-grid">
+
+        <!-- Student -->
+        <div class="form-group">
+          <label>
+  Student Name <span class="required-star">*</span>
+</label>
+          <select id="studentId" formControlName="studentId">
+            <option value="">Select student</option>
+            <option *ngFor="let student of students"
+                    [value]="student.studentId">
+              {{ student.studentName }}
+            </option>
+          </select>
+
+          <small *ngIf="isLoadingStudents">Loading students...</small>
+          <small class="field-error"
+                 *ngIf="requestForm.get('studentId')?.touched &&
+                        requestForm.get('studentId')?.invalid">
+            Please select a student.
+          </small>
+        </div>
+
+        <!-- Subject -->
+        <div class="form-group">
+         <label>
+  Subject <span class="required-star">*</span>
+</label>
+          <select id="subjectId" formControlName="subjectId">
+            <option value="">Select subject</option>
+            <option *ngFor="let subject of subjects"
+                    [value]="subject.subjectId">
+              {{ subject.subjectName }}
+            </option>
+          </select>
+
+          <small *ngIf="isLoadingSubjects">Loading subjects...</small>
+          <small class="field-error"
+                 *ngIf="requestForm.get('subjectId')?.touched &&
+                        requestForm.get('subjectId')?.invalid">
+            Please select a subject.
+          </small>
+        </div>
+
+        <!-- Tuition Type -->
+        <div class="form-group">
+         <label>
+  Tuition Type <span class="required-star">*</span>
+</label>
+          <select id="tuitionTypeId" formControlName="tuitionTypeId">
+            <option value="">Select tuition type</option>
+            <option value="1">Home Tuition</option>
+            <option value="2">Online Tuition</option>
+          </select>
+
+          <small class="field-error"
+                 *ngIf="requestForm.get('tuitionTypeId')?.touched &&
+                        requestForm.get('tuitionTypeId')?.invalid">
+            Please select a tuition type.
+          </small>
+        </div>
+
+        <!-- City -->
+        <div class="form-group">
+         <label>
+  City <span class="required-star">*</span>
+</label>
+          <select id="cityId"
+                  formControlName="cityId"
+                  (change)="loadAreas(+$any($event.target).value)">
+            <option value="">Select city</option>
+            <option *ngFor="let city of cities"
+                    [value]="city.cityId">
+              {{ city.cityName }}
+            </option>
+          </select>
+
+          <small *ngIf="isLoadingCities">Loading cities...</small>
+          <small class="field-error"
+                 *ngIf="requestForm.get('cityId')?.touched &&
+                        requestForm.get('cityId')?.invalid">
+            Please select a city.
+          </small>
+        </div>
+
+        <!-- Area -->
+        <div class="form-group">
+          <label>
+  Area <span class="required-star">*</span>
+</label>
+          <select id="areaId"
+                  formControlName="areaId"
+                  [disabled]="isLoadingAreas ||
+                              !requestForm.get('cityId')?.value">
+            <option value="">Select area</option>
+            <option *ngFor="let area of areas"
+                    [value]="area.areaId">
+              {{ area.areaName }}
+            </option>
+          </select>
+
+          <small *ngIf="isLoadingAreas">Loading areas...</small>
+          <small class="field-error"
+                 *ngIf="requestForm.get('areaId')?.touched &&
+                        requestForm.get('areaId')?.invalid">
+            Please select an area.
+          </small>
+          <small *ngIf="areaError">{{ areaError }}</small>
+        </div>
+
+        <!-- Budget -->
+        <div class="form-group">
+          <label>
+  Monthly Budget <span class="required-star">*</span>
+</label>
+          <input id="budget"
+                 type="number"
+                 formControlName="budget"
+                 min="1"
+                 placeholder="e.g. 18000" />
+
+          <small class="field-error"
+                 *ngIf="requestForm.get('budget')?.touched &&
+                        requestForm.get('budget')?.invalid">
+            Enter a budget greater than zero.
+          </small>
+        </div>
+
+        <!-- Preferred Tutor Gender -->
+        <div class="form-group">
+          <label for="preferredTutorGenderId">
+            Preferred Tutor Gender
+          </label>
+          <select id="preferredTutorGenderId"
+                  formControlName="preferredTutorGenderId">
+            <option value="0">No preference</option>
+            <option value="1">Male</option>
+            <option value="2">Female</option>
+          </select>
+        </div>
+
+        <!-- Preferred Date -->
+        <div class="form-group">
+          <label for="preferredStartDate">Preferred Start Date *</label>
+          <input id="preferredStartDate"
+                 type="date"
+                 formControlName="preferredStartDate" />
+
+          <small class="field-error"
+                 *ngIf="requestForm.get('preferredStartDate')?.touched &&
+                        requestForm.get('preferredStartDate')?.invalid">
+            Please select a preferred start date.
+          </small>
+        </div>
+
+        <!-- Requirements -->
+        <div class="form-group full-width">
+          <label for="specialInstructions">
+            Additional Requirements
+          </label>
+          <textarea id="specialInstructions"
+                    formControlName="specialInstructions"
+                    rows="4"
+                    placeholder="Class, grade, preferred schedule, or other details">
+          </textarea>
+        </div>
+
+      </div>
+
+      <!-- Messages -->
+      <div class="full-width" *ngIf="loadingError" role="alert">
+        <p class="field-error">{{ loadingError }}</p>
+      </div>
+
+      <!-- Success Message -->
+<div *ngIf="successMessage" class="success-message" role="status">
+  <span class="message-icon">✓</span>
+  <span>{{ successMessage }}</span>
+</div>
+
+      <!-- Error Message -->
+<div *ngIf="errorMessage" class="error-message" role="alert">
+  <span class="message-icon">!</span>
+  <div>
+    <strong>Request not submitted</strong>
+    <p>{{ errorMessage }}</p>
+  </div>
+</div>
+
+      <div class="form-actions">
+        <button type="submit"
+                [disabled]="isLoading ||
+                            isLoadingStudents ||
+                            isLoadingSubjects ||
+                            isLoadingCities ||
+                            !students.length">
+          {{ isLoading ? 'Submitting...' : 'Submit Request' }}
+        </button>
+      </div>
+
+      <p class="form-note">
+        Your request will be reviewed by the TutorNest team.
+        Tutor matching and approval are managed through our platform.
+      </p>
+
+    </form>
+  </div>
+</div>

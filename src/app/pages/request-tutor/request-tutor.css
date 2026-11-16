@@ -1,0 +1,258 @@
+
+:host {
+  display: block;
+  min-height: 100%;
+  font-family: 'Inter', sans-serif;
+  color: #1e293b;
+}
+
+.request-page {
+  min-height: 100vh;
+  padding: 48px 20px 64px;
+  background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 45%, #ffffff 100%);
+}
+
+.request-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.request-heading {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.request-heading h1 {
+  margin: 0 0 14px;
+  color: #0f172a;
+  font-size: clamp(30px, 4vw, 40px);
+  font-weight: 750;
+  letter-spacing: -1px;
+}
+
+.request-heading p {
+  max-width: 600px;
+  margin: 0 auto;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.request-form {
+  padding: 36px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 16px 45px rgba(15, 23, 42, 0.07);
+}
+
+.request-form h2 {
+  margin: 0 0 26px;
+  color: #0f172a;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.form-group {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.form-group label {
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  outline: none;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input,
+.form-group select {
+  min-height: 46px;
+}
+
+.form-group textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #94a3b8;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+
+.form-actions button {
+  min-height: 48px;
+  padding: 0 28px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.form-actions button:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.form-actions button:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}
+
+.form-note {
+  margin: 20px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .request-page {
+    padding: 32px 14px 44px;
+  }
+
+  .request-form {
+    padding: 24px 18px;
+    border-radius: 16px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}
+.field-error {
+  color: #dc2626;
+  font-size: 13px;
+  margin-top: 5px;
+  display: block;
+}
+
+.error-message {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.success-message {
+  color: #15803d;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.success-message,
+.error-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  margin: 16px 0;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.success-message {
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+}
+
+.error-message {
+  color: #991b1b;
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+}
+
+.error-message p {
+  margin: 4px 0 0;
+}
+
+.message-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.8);
+}
+.required-star {
+  color: #dc2626;
+  font-weight: 700;
+  margin-left: 3px;
+}

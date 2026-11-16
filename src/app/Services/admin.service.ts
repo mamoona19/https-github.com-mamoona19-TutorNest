@@ -92,23 +92,23 @@ export class AdminService {
   }
 
 
-  updateTutorApplication(
-    requestTutorId: number,
-    requestStatusId: number,
-    adminRemarks: string
-  ): Observable<any> {
-
-    return this.http.put<any>(
-      `${this.apiUrl}/TutorRequest/admin-applications/${requestTutorId}/status`,
-      null,
-      {
-        params: {
-          requestStatusId,
-          adminRemarks
-        }
+updateTutorApplication(
+  requestTutorId: number,
+  requestStatusName: string,
+  adminRemarks: string
+): Observable<any> {
+  return this.http.put<any>(
+    `${this.apiUrl}/TutorRequest/admin-applications/${requestTutorId}/status`,
+    null,
+    {
+      params: {
+        requestStatusName,
+        adminRemarks
       }
-    );
-  }
+    }
+  );
+}
+
 
 
   getPendingDemoRequests():
@@ -125,31 +125,37 @@ export class AdminService {
     `${this.apiUrl}/TutorRequest/admin-demo-availability/${tutorDemoRequestId}`
   );
 }
-scheduleTutorDemo(
-  tutorDemoRequestId: number,
-  availabilityId: number,
-  adminRemarks: string
-): Observable<any> {
+
+scheduleTutorDemo(request: {
+  tutorDemoRequestId: number;
+  availabilityId: number;
+  meetingModeId: number;
+  meetingLink: string | null;
+  meetingAddress: string | null;
+  adminRemarks: string | null;
+}): Observable<any> {
   return this.http.post<any>(
     `${this.apiUrl}/TutorRequest/admin-schedule-demo`,
-    {
-      tutorDemoRequestId,
-      availabilityId,
-      adminRemarks
-    }
+    request
   );
 }
+
 selectTutor(requestTutorId: number) {
   return this.http.put(
     `${this.apiUrl}/TutorRequest/select-tutor/${requestTutorId}`,
     {}
   );
 }
-getPendingPayments(): Observable<PendingPayment[]> {
 
-  return this.http.get<PendingPayment[]>(
-    `${this.apiUrl}/Payment/admin-pending-payments`
+getPendingPayments(): Observable<any> {
+  return this.http.get<any>(
+    'https://localhost:44351/api/Payment/admin/pending-payments'
   );
 }
 
+getMeetingModes(): Observable<any[]> {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/TutorRequest/meeting-modes`
+  );
+}
 }

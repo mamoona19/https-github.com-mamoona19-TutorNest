@@ -1,0 +1,142 @@
+<div class="active-tuitions-page">
+
+  <div class="page-header">
+    <div>
+      <span class="page-eyebrow">TUTOR PORTAL</span>
+      <h1>Active Tuitions</h1>
+      <p>View your confirmed tuition contracts and payment details.</p>
+    </div>
+
+    <div class="total-count">
+      <strong>{{ myActiveTuitions.length }}</strong>
+      <span>Active Contracts</span>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="state-card">
+      <div class="loader"></div>
+      <p>Loading your active tuitions...</p>
+    </div>
+  }
+
+  @else if (errorMessage) {
+    <div class="error-message">
+      {{ errorMessage }}
+
+      <button type="button" (click)="loadMyActiveTuitions()">
+        Try Again
+      </button>
+    </div>
+  }
+
+  @else if (myActiveTuitions.length === 0) {
+    <div class="empty-state">
+      <h3>No active tuitions yet</h3>
+      <p>
+        Your tuition contracts will appear here after the first payment
+        is verified and the contract becomes active.
+      </p>
+    </div>
+  }
+
+  @else {
+    <div class="contract-grid">
+
+      @for (tuition of myActiveTuitions; track tuition.tuitionContractId) {
+
+        <article class="contract-card">
+
+          <div class="contract-header">
+            <div>
+              <span class="request-label">
+                Contract #{{ tuition.tuitionContractId }}
+              </span>
+
+              <h3>
+                Tuition Request #{{ tuition.tuitionRequestId }}
+              </h3>
+            </div>
+
+            <span class="status-badge">
+              {{ tuition.contractStatusName }}
+            </span>
+          </div>
+
+          <div class="contract-fee">
+            <span>Monthly Fee</span>
+            <strong>
+              Rs. {{ tuition.monthlyFee | number:'1.0-2' }}
+            </strong>
+          </div>
+
+          <div class="financial-grid">
+
+            <div class="financial-item">
+              <span>Platform Commission</span>
+              <strong>
+                {{ tuition.platformCommissionPercentage }}%
+                (Rs. {{ tuition.platformCommissionAmount | number:'1.0-2' }})
+              </strong>
+            </div>
+
+            <div class="financial-item payable">
+              <span>Your Payable Amount</span>
+              <strong>
+                Rs. {{ tuition.tutorPayableAmount | number:'1.0-2' }}
+              </strong>
+            </div>
+
+          </div>
+
+          <div class="contract-details">
+
+            <div class="detail-item">
+              <span>Contract Start</span>
+              <strong>
+                {{ tuition.contractStartDate | date:'dd MMM yyyy' }}
+              </strong>
+            </div>
+
+            @if (tuition.contractEndDate) {
+              <div class="detail-item">
+                <span>Contract End</span>
+                <strong>
+                  {{ tuition.contractEndDate | date:'dd MMM yyyy' }}
+                </strong>
+              </div>
+            }
+
+            <div class="detail-item">
+              <span>First Payment</span>
+              <strong>
+                {{ tuition.isFirstPaymentReceived ? 'Verified' : 'Pending' }}
+              </strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Tutor Payout</span>
+              <strong>
+                {{ tuition.tutorPaymentReleased ? 'Released' : 'Not Released' }}
+              </strong>
+            </div>
+
+            @if (tuition.tutorPaymentReleaseDate) {
+              <div class="detail-item full-width">
+                <span>Payout Date</span>
+                <strong>
+                  {{ tuition.tutorPaymentReleaseDate | date:'dd MMM yyyy, h:mm a' }}
+                </strong>
+              </div>
+            }
+
+          </div>
+
+        </article>
+
+      }
+
+    </div>
+  }
+
+</div>

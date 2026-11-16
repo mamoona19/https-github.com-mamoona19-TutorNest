@@ -1,0 +1,240 @@
+<!-- TUITION REQUESTS -->
+  <section class="requests-card">
+    <div class="card-header">
+      <div>
+        <span class="section-eyebrow">TUITION MANAGEMENT</span>
+        <h2>My Tuition Requests</h2>
+        <p>Review your requests and see which tutors have applied.</p>
+      </div>
+      <div class="request-count" *ngIf="!isLoadingRequests && !requestsError">
+        <strong>{{ myRequests.length }}</strong>
+        <span>Requests</span>
+      </div>
+    </div>
+
+    <div class="requests-loading" *ngIf="isLoadingRequests">
+      <div class="loading-spinner"></div>
+      <span>Loading your tuition requests...</span>
+    </div>
+
+    <div class="requests-error" *ngIf="!isLoadingRequests && requestsError">
+      <div class="error-icon">!</div>
+      <div>
+        <strong>Unable to load requests</strong>
+        <p>{{ requestsError }}</p>
+      </div>
+    </div>
+
+    <div class="no-requests"
+      *ngIf="!isLoadingRequests && !requestsError && myRequests.length === 0">
+      <div class="empty-icon">＋</div>
+      <h3>No tuition requests yet</h3>
+      <p>Create your first request to start finding a suitable tutor.</p>
+    </div>
+
+    <div class="requests-list"
+      *ngIf="!isLoadingRequests && !requestsError && myRequests.length > 0">
+
+      <div class="request-item"
+        *ngFor="let request of myRequests | slice:0:(showAllRequests ? myRequests.length : 2); let i = index">
+
+        <div class="request-item-header">
+          <div class="request-title-area">
+            <div>
+              <h3>{{ request.subjectName }}</h3>
+              <span class="request-id">
+                Request #{{ request.tuitionRequestId }} · {{ request.studentName }}
+              </span>
+            </div>
+          </div>
+
+          <span class="status-badge"
+            [ngClass]="{
+              'status-pending': request.statusId === 1,
+              'status-matched': request.statusId === 2,
+              'status-accepted': request.statusId === 3,
+              'status-demo': request.statusId === 4 || request.statusId === 5,
+              'status-active': request.statusId === 6,
+              'status-completed': request.statusId === 7,
+              'status-cancelled': request.statusId === 8
+            }">
+            {{ request.statusName }}
+          </span>
+        </div>
+
+        <div class="request-details">
+          <div class="detail-item">
+            <span class="detail-label">Child</span>
+            <span class="detail-value">{{ request.studentName }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Tuition Type</span>
+            <span class="detail-value">{{ request.tuitionTypeName }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Location</span>
+            <span class="detail-value">{{ request.cityName }}, {{ request.areaName }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Monthly Budget</span>
+            <span class="detail-value budget-value">Rs. {{ request.budget | number }}</span>
+          </div>
+          <ng-container *ngIf="i === 0">
+            <div class="detail-item">
+              <span class="detail-label">Start Date</span>
+              <span class="detail-value">
+                {{ request.preferredStartDate ? (request.preferredStartDate | date:'dd MMM yyyy') : 'Not specified' }}
+              </span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Submitted</span>
+              <span class="detail-value">
+                {{ request.createdDate ? (request.createdDate | date:'dd MMM yyyy, hh:mm a') : 'Not available' }}
+              </span>
+            </div>
+          </ng-container>
+        </div>
+
+        <div class="special-instructions" *ngIf="i === 0 && request.specialInstructions">
+          <span class="detail-label">Special Instructions</span>
+          <p>{{ request.specialInstructions }}</p>
+        </div>
+
+        <div class="request-actions">
+          <button type="button" class="view-applications-btn"
+            (click)="loadTutorApplications(request.tuitionRequestId)">
+            <span>View Applications</span>
+            <span class="button-arrow">→</span>
+          </button>
+        </div>
+
+        <!-- TUTOR APPLICATIONS -->
+        <div class="applications-section"
+          *ngIf="selectedRequestId === request.tuitionRequestId">
+
+          <div class="applications-header">
+            <div>
+              <span class="section-eyebrow">TUTOR MATCHING</span>
+              <h3>Tutor Applications</h3>
+              <p>Tutors who have applied for this request.</p>
+            </div>
+            <span *ngIf="isLoadingApplications" class="applications-count">Loading...</span>
+            <span *ngIf="!isLoadingApplications && !applicationsError" class="applications-count">
+              {{ tutorApplications.length }}
+              application{{ tutorApplications.length === 1 ? '' : 's' }}
+            </span>
+          </div>
+
+          <div class="applications-error"
+            *ngIf="!isLoadingApplications && applicationsError">
+            {{ applicationsError }}
+          </div>
+
+          <div class="no-applications"
+            *ngIf="!isLoadingApplications && !applicationsError && tutorApplications.length === 0">
+            <div class="no-applications-icon">⏳</div>
+            <div>
+              <h4>No tutor applications yet</h4>
+              <p>Tutors have not applied for this tuition request yet.</p>
+            </div>
+          </div>
+
+          <div class="applications-list"
+            *ngIf="!isLoadingApplications && !applicationsError && tutorApplications.length > 0">
+
+            <div class="application-item"
+              *ngFor="let application of tutorApplications">
+
+              <div class="application-header">
+                <div class="tutor-info">
+                  <div class="tutor-avatar">
+                    {{ application.tutorName?.charAt(0)?.toUpperCase() }}
+                  </div>
+                  <span class="tutor-name">{{ application.tutorName }}</span>
+                </div>
+
+                <div class="application-actions">
+                  <span class="application-status">
+                    {{
+                      application.demoRequested === true
+                        ? (application.demoStatusName === 'Completed'
+                            ? 'Demo Completed'
+                            : application.demoStatusName)
+                        : application.applicationStatus
+                    }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="application-details">
+                <div class="application-detail">
+                  <span class="application-label">
+                    <span class="detail-icon">📅</span>
+                    Applied On
+                  </span>
+                  <span class="application-value">
+                    {{ application.sentDate ? (application.sentDate | date:'dd MMM yyyy, hh:mm a') : 'Not available' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="application-remarks" *ngIf="application.tutorRemarks">
+                <span class="application-label">Tutor Message</span>
+                <p>{{ application.tutorRemarks }}</p>
+              </div>
+
+              <div class="application-status-row"
+                *ngIf="application.requestStatusId === 2">
+
+                <div class="selected-tutor-status" *ngIf="application.isSelected">
+                  <span class="selected-check">✓</span>
+                  <span>Tutor Selected</span>
+                </div>
+
+                <button type="button" class="btn-demo"
+                  *ngIf="!application.isSelected && !application.demoRequested"
+                  (click)="requestDemo(application)">
+                  Request Demo
+                </button>
+
+                <span *ngIf="!application.isSelected && application.demoRequested"
+                  class="demo-status">
+                  {{ application.demoStatusName || 'Demo Requested' }}
+                </span>
+
+                <div class="selected-demo-status"
+                  *ngIf="application.isSelected && application.demoRequested">
+                  ✓ Demo {{ application.demoStatusName }}
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="demoMessage" class="demo-message"
+              [class.success]="demoMessageType === 'success'"
+              [class.error]="demoMessageType === 'error'">
+              {{ demoMessage }}
+            </div>
+          </div>
+
+          <div class="applications-footer">
+            <button type="button" class="close-applications-btn"
+              (click)="closeTutorApplications()">
+              Close Applications
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="explore-requests-footer" *ngIf="myRequests.length > 2">
+        <button type="button" class="explore-all-btn"
+          (click)="showAllRequests = !showAllRequests">
+          <span *ngIf="!showAllRequests">Explore All {{ myRequests.length }} Requests</span>
+          <span *ngIf="showAllRequests">Show Less</span>
+          <span class="explore-arrow" [class.arrow-up]="showAllRequests">→</span>
+        </button>
+        <span class="requests-display-count">
+          Showing {{ showAllRequests ? myRequests.length : 2 }} of {{ myRequests.length }} requests
+        </span>
+      </div>
+    </div>
+  </section>

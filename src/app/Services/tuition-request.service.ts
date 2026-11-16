@@ -60,25 +60,20 @@ export interface TutorApplication {
   requestTutorId: number;
   tuitionRequestId: number;
   tutorId: number;
-  userId: number;
 
-  firstName: string;
-  lastName: string;
+  tutorName: string;
 
   requestStatusId: number;
-  requestStatusName: string;
+  applicationStatus: string;
 
   tutorRemarks: string | null;
   isSelected: boolean;
 
-  createdDate: string;
-
-  sentDate?: string;
-  responseDate?: string | null;
+  sentDate: string;
+  responseDate: string | null;
 
   selectedForDemo?: boolean;
 
-  // ADD THESE
   demoRequested?: boolean;
   demoStatusId?: number;
   demoStatusName?: string;
@@ -117,11 +112,11 @@ export class TuitionRequestService {
       `${this.apiUrl}/my-requests`
     );
   }
-  getTutorApplications(
+ getTutorApplications(
   tuitionRequestId: number
 ): Observable<TutorApplication[]> {
   return this.http.get<TutorApplication[]>(
-    `${this.apiUrl}/${tuitionRequestId}/tutor-applications`
+    `https://localhost:44351/api/TutorRequest/parent-applications/${tuitionRequestId}`
   );
 }
 requestTutorDemo(request: any): Observable<any> {

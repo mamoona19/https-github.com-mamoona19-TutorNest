@@ -1,486 +1,257 @@
-<div class="dashboard">
 
-  <!-- =========================
-       Header
-  ========================== -->
+<div class="tutor-dashboard">
 
+  <!-- Dashboard Header -->
   <header class="dashboard-header">
+    <div class="header-content">
+      <span class="section-eyebrow">TUTORNEST · TUTOR PORTAL</span>
+      <h1>Tutor Dashboard</h1>
+      <p>
+        Welcome, {{ firstName }} {{ lastName }}!
+        Here's an overview of your teaching activity.
+      </p>
+    </div>
 
-
-<div>
-  <span class="eyebrow">TutorNest</span>
-
-  <h1>
-    Welcome, {{ firstName }} {{ lastName }}
-  </h1>
-
-  <p>
-    Manage your tuition requests and tutoring activity.
-  </p>
-</div>
-
-<button
-  class="profile-btn"
-  (click)="goToProfile()"
->
-  My Profile
-</button>
-
-
+    <button type="button" class="profile-btn" (click)="goToProfile()">
+      My Profile
+    </button>
   </header>
 
-  <!-- =========================
-       Stats
-  ========================== -->
+  <!-- Summary Cards -->
+  <section class="dashboard-overview">
 
-  <section class="stats">
-
-
-<div class="stat-card">
-  <span>Available Requests</span>
-  <strong>{{ availableRequests.length }}</strong>
-</div>
-
-<div class="stat-card">
-  <span>Accepted</span>
-  <strong>{{ acceptedCount }}</strong>
-</div>
-
-<div class="stat-card">
-  <span>Pending Demos</span>
-  <strong>{{ pendingDemoCount }}</strong>
-</div>
-
-<div class="stat-card">
-  <span>Active Tuition</span>
-  <strong>{{ activeTuitionCount }}</strong>
-</div>
-
-
-  </section>
-
-  <!-- =========================
-       Apply Message
-  ========================== -->
-
-  <div
-    class="apply-message"
-    *ngIf="applyMessage"
-  >
-    {{ applyMessage }}
-  </div>
-
-  <!-- =========================
-       My Applications
-  ========================== -->
-
-  <section class="requests-card">
-
-
-<div class="section-header">
-
-  <div>
-
-    <h2>
-      My Applications
-    </h2>
-
-    <p>
-      Track the tuition requests you have applied for.
-    </p>
-
-  </div>
-
-</div>
-
-
-<!-- No Applications -->
-
-<div
-  class="empty-state"
-  *ngIf="myApplications.length === 0"
->
-
-  <div class="empty-icon">
-    📝
-  </div>
-
-  <h3>
-    No applications yet
-  </h3>
-
-  <p>
-    Your applications will appear here after you apply
-    for a tuition request.
-  </p>
-
-</div>
-
-
-<!-- Applications List -->
-
-<div
-  class="request-list"
-  *ngIf="myApplications.length > 0"
->
-
-  <div
-    class="request-item"
-    *ngFor="let application of myApplications"
-  >
-
-    <!-- Application Information -->
-
-    <div class="request-info">
-
-      <span class="request-label">
-        Application #{{ application.requestTutorId }}
-      </span>
-
-      <h3>
-        {{ application.subjectName }} Tuition
-      </h3>
-
-      <p>
-        Tuition Request:
-
-        <strong>
-          #{{ application.tuitionRequestId }}
-        </strong>
-      </p>
-
-      <p>
-        Budget:
-
-        <strong>
-          Rs. {{ application.budget }}
-        </strong>
-      </p>
-
-      <p
-        *ngIf="
-          application.cityName ||
-          application.areaName
-        "
-      >
-        Location:
-
-        <strong>
-
-          {{ application.cityName }}
-
-          <span
-            *ngIf="application.areaName"
-          >
-            , {{ application.areaName }}
-          </span>
-
-        </strong>
-
-      </p>
-
-      <p>
-        Preferred Start:
-
-        {{ application.preferredStartDate | date:'mediumDate' }}
-      </p>
-
-      <p
-        *ngIf="application.tutorRemarks"
-      >
-        Your Remarks:
-
-        <strong>
-          {{ application.tutorRemarks }}
-        </strong>
-      </p>
-
+    <div class="overview-heading">
+      <div>
+        <span class="section-eyebrow">DASHBOARD OVERVIEW</span>
+        <h2>Your teaching at a glance</h2>
+        <p>Monitor your tutoring activity and progress.</p>
+      </div>
     </div>
 
+    <div class="overview-grid">
+
+      <button
+        type="button"
+        class="overview-card overview-blue"
+        (click)="goToAvailableRequests()">
+
+        <div class="overview-card-top">
+          <span class="overview-caption">OPPORTUNITIES</span>
+        </div>
+
+        <div class="overview-number">{{ availableRequests.length }}</div>
+        <div class="overview-label">Available Requests</div>
+        <div class="overview-footnote">Explore new opportunities</div>
+      </button>
+
+      <button
+        type="button"
+        class="overview-card overview-teal"
+        (click)="goToMyApplications()">
+
+        <div class="overview-card-top">
+          <span class="overview-caption">APPLICATIONS</span>
+        </div>
+
+        <div class="overview-number">{{ acceptedCount }}</div>
+        <div class="overview-label">Accepted Applications</div>
+        <div class="overview-footnote">View your applications</div>
+      </button>
+
+      <button
+        type="button"
+        class="overview-card overview-purple"
+        (click)="goToMyDemos()">
+
+        <div class="overview-card-top">
+          <span class="overview-caption">DEMO SESSIONS</span>
+        </div>
+
+        <div class="overview-number">{{ pendingDemoCount }}</div>
+        <div class="overview-label">Pending Demos</div>
+        <div class="overview-footnote">View your demo requests</div>
+      </button>
+
+      <button
+        type="button"
+        class="overview-card overview-blue"
+        (click)="goToActiveTuitions()">
+
+        <div class="overview-card-top">
+          <span class="overview-caption">CONTRACTS</span>
+        </div>
+
+        <div class="overview-number">{{ activeTuitionCount }}</div>
+        <div class="overview-label">Active Tuitions</div>
+        <div class="overview-footnote">View your active contracts</div>
+      </button>
+
+    </div>
+  </section>
+
+  <!-- Charts -->
+  <section class="analytics-grid">
 
     <!-- Application Status -->
+    <article class="analytics-card">
 
-    <div class="request-action">
+      <div class="analytics-header">
+        <div>
+          <span class="section-eyebrow">APPLICATION ANALYTICS</span>
+          <h2>Application Status</h2>
+          <p>Distribution of your applications.</p>
+        </div>
 
-      <span
-        class="status-badge"
-        [class.pending]="
-          application.requestStatusId === 1
-        "
-        [class.accepted]="
-          application.requestStatusId === 2
-        "
-        [class.rejected]="
-          application.requestStatusId === 3
-        "
-      >
-        {{ application.applicationStatus }}
-      </span>
+        <button
+          type="button"
+          class="chart-link"
+          (click)="goToMyApplications()">
+          View all
+        </button>
+      </div>
 
-    </div>
+      <div class="chart-total">
+        <strong>{{ myApplications.length }}</strong>
+        <span>Total Applications</span>
+      </div>
 
-  </div>
+      <div class="chart-bars">
 
-</div>
+        <div class="chart-row" *ngFor="let item of applicationChart">
 
+          <div class="chart-label">
+            <span>{{ item.label }}</span>
+            <strong>{{ item.count }}</strong>
+          </div>
+
+          <div class="chart-track">
+            <div
+              class="chart-fill"
+              [class.accepted-fill]="item.label === 'Accepted'"
+              [class.pending-fill]="item.label === 'Pending'"
+              [class.rejected-fill]="item.label === 'Rejected'"
+              [style.width.%]="
+                myApplications.length
+                  ? (item.count / myApplications.length) * 100
+                  : 0
+              ">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </article>
+
+    <!-- Demo Overview -->
+    <article class="analytics-card">
+
+      <div class="analytics-header">
+        <div>
+          <span class="section-eyebrow">DEMO ANALYTICS</span>
+          <h2>Demo Overview</h2>
+          <p>Track the progress of your demo sessions.</p>
+        </div>
+
+        <button
+          type="button"
+          class="chart-link"
+          (click)="goToMyDemos()">
+          View all
+        </button>
+      </div>
+
+      <div class="chart-total">
+        <strong>{{ myDemoRequests.length }}</strong>
+        <span>Total Demo Requests</span>
+      </div>
+
+      <div class="chart-bars">
+
+        <div class="chart-row" *ngFor="let item of demoChart">
+
+          <div class="chart-label">
+            <span>{{ item.label }}</span>
+            <strong>{{ item.count }}</strong>
+          </div>
+
+          <div class="chart-track">
+            <div
+              class="chart-fill"
+              [class.pending-fill]="item.label === 'Pending'"
+              [class.scheduled-fill]="item.label === 'Scheduled'"
+              [class.completed-fill]="item.label === 'Completed'"
+              [class.other-fill]="item.label === 'Other'"
+              [style.width.%]="
+                myDemoRequests.length
+                  ? (item.count / myDemoRequests.length) * 100
+                  : 0
+              ">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </article>
 
   </section>
 
-  <!-- =========================
-       My Demos
-  ========================== -->
+  <!-- Earnings and Payout Summary -->
+  <section class="earnings-section">
 
-  <section class="requests-card">
+    <div class="earnings-heading">
+      <div>
+        <span class="section-eyebrow">FINANCIAL OVERVIEW</span>
+        <h2>Earnings & Payouts</h2>
+        <p>Summary of your payable amounts from active tuition contracts.</p>
+      </div>
 
-
-<div class="section-header">
-
-  <div>
-
-    <h2>
-      My Demos
-    </h2>
-
-    <p>
-      View and track your demo requests.
-    </p>
-
-  </div>
-
-</div>
-
-
-<!-- No Demos -->
-
-<div
-  class="empty-state"
-  *ngIf="myDemoRequests.length === 0"
->
-
-  <div class="empty-icon">
-    🎓
-  </div>
-
-  <h3>
-    No demo requests yet
-  </h3>
-
-  <p>
-    Your demo requests will appear here when a parent
-    requests a demo.
-  </p>
-
-</div>
-
-
-<!-- Demo List -->
-
-<div
-  class="request-list"
-  *ngIf="myDemoRequests.length > 0"
->
-
-  <div
-    class="request-item"
-    *ngFor="let demo of myDemoRequests"
-  >
-
-    <!-- Demo Information -->
-
-    <div class="request-info">
-
-      <span class="request-label">
-        Demo #{{ demo.tutorDemoRequestId }}
-      </span>
-
-      <h3>
-        {{ demo.subjectName }} Tuition
-      </h3>
-
-      <p>
-        Student:
-
-        <strong>
-          {{ demo.studentName }}
-        </strong>
-      </p>
-
-      <p>
-        Tuition Type:
-
-        <strong>
-          {{ demo.tuitionTypeName }}
-        </strong>
-      </p>
-
-      <p>
-        Location:
-
-        <strong>
-
-          {{ demo.cityName }}
-
-          <span
-            *ngIf="demo.areaName"
-          >
-            , {{ demo.areaName }}
-          </span>
-
-        </strong>
-
-      </p>
-
-      <p>
-        Budget:
-
-        <strong>
-          Rs. {{ demo.budget }}
-        </strong>
-      </p>
-
-      <p>
-        Preferred Start:
-
-        {{ demo.preferredStartDate | date:'mediumDate' }}
-      </p>
-
-      <p
-        *ngIf="demo.parentRemarks"
-      >
-        Parent Remarks:
-
-        <strong>
-          {{ demo.parentRemarks }}
-        </strong>
-      </p>
-
-      <p>
-        Requested On:
-
-        {{ demo.requestedDate | date:'mediumDate' }}
-      </p>
-
+      <button
+        type="button"
+        class="chart-link"
+        (click)="goToActiveTuitions()">
+        View contracts
+      </button>
     </div>
 
+    <div class="earnings-grid">
 
-    <!-- =========================
-         Scheduled Demo
-    ========================== -->
+      <div class="earning-card">
+        <span class="earning-label">Total Tutor Earnings</span>
+        <strong>Rs. {{ totalTutorEarnings | number:'1.0-2' }}</strong>
+        <span class="earning-note">Total payable tutor share</span>
+      </div>
 
-   <!-- Scheduled / Confirmed Demo -->
+      <div class="earning-card earning-released">
+        <span class="earning-label">Released Payout</span>
+        <strong>Rs. {{ releasedPayout | number:'1.0-2' }}</strong>
+        <span class="earning-note">Payments marked as released</span>
+      </div>
 
-<div
-  class="scheduled-demo"
-  *ngIf="
-    demo.demoStatusName?.toLowerCase() === 'scheduled' ||
-    demo.demoStatusName?.toLowerCase() === 'tutor confirmed' ||
-    demo.demoStatusName?.toLowerCase() === 'parent confirmed'
-  "
->
+      <div class="earning-card earning-pending">
+        <span class="earning-label">Pending Payout</span>
+        <strong>Rs. {{ pendingPayout | number:'1.0-2' }}</strong>
+        <span class="earning-note">Payments not yet released</span>
+      </div>
 
-  <div class="scheduled-status">
-
-    <span
-  class="status-badge"
-  [class.pending]="
-    demo.demoStatusName?.toLowerCase().includes('scheduled')
-  "
-  [class.accepted]="
-    demo.demoStatusName?.toLowerCase().includes('confirmed')
-  "
->
-  {{ demo.demoStatusName }}
-</span>
-
-  </div>
-
-  <div class="scheduled-demo-details">
-
-    <div>
-      <span>Date</span>
-      <strong>
-        {{ demo.scheduledDate | date:'dd MMM yyyy' }}
-      </strong>
     </div>
-
-    <div>
-      <span>Time</span>
-      <strong>
-        {{ demo.scheduledStartTime }} -
-        {{ demo.scheduledEndTime }}
-      </strong>
-    </div>
-
-  </div>
-
-  <!-- Tutor Confirmation -->
-
- <div
-  class="demo-confirm-action"
-  *ngIf="
-    demo.demoStatusName?.toLowerCase().includes('scheduled')
-  "
->
-
-  <p>
-    Please confirm that you are available for this scheduled demo.
-  </p>
-
-  <button
-    type="button"
-    class="confirm-demo-btn"
-    (click)="confirmDemo(demo)"
-  >
-    Confirm Availability
-  </button>
-
-</div>
-<!-- Complete Demo -->
-
-<div
-  class="demo-complete-action"
-  *ngIf="
-    demo.demoStatusName?.toLowerCase() === 'parent confirmed'
-  "
->
-  <p>
-    Has the demo session been completed?
-  </p>
-
-  <button
-    type="button"
-    class="complete-demo-btn"
-    (click)="completeDemo(demo)"
-  >
-    Complete Demo
-  </button>
-</div>
-</div>
-
-
-    <!-- =========================
-         Other Demo Statuses
-    ========================== -->
-
-   <!-- Other Demo Statuses -->
-
-<div
-  class="request-action"
-  *ngIf="
-    demo.demoStatusId !== 4 &&
-    demo.demoStatusId !== 7
-  "
->
-  <span class="status-badge pending">
-    {{ demo.demoStatusName }}
-  </span>
-</div>
-
-  </div>
-
-</div>
-
 
   </section>
+
+  <!-- Available Requests Loading / Error -->
+  <div class="dashboard-message" *ngIf="loading">
+    Loading dashboard data...
+  </div>
+
+  <div class="dashboard-message error-message" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="apply-message" *ngIf="applyMessage">
+    {{ applyMessage }}
+  </div>
 
 </div>

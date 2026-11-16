@@ -12,6 +12,21 @@ export interface TutorRequest {
   tutorRemarks: string | null;
 }
 
+export interface AdminTutorVerification {
+  tutorId: number;
+  userId: number;
+  tutorName: string;
+  cnic: string;
+  cityName: string | null;
+  areaName: string | null;
+  experienceYears: number;
+  hourlyRate: number | null;
+  verificationStatus: string;
+  isDemoAvailable: boolean;
+  createdDate: string;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -77,4 +92,53 @@ completeDemo(
     }
   );
 }
+
+getMyActiveTuitions(): Observable<any> {
+  return this.http.get<any>(
+    `${this.apiUrl}/my-active-tuitions`
+  );
+}
+
+
+
+getTutorsForAdminVerification(): Observable<AdminTutorVerification[]> {
+  return this.http.get<AdminTutorVerification[]>(
+    `${this.apiUrl}/admin-tutors-verification`
+  );
+}
+
+
+
+updateTutorVerification(
+  tutorId: number,
+  verificationStatusName: 'Verified' | 'Rejected'
+): Observable<{ message: string }> {
+  return this.http.put<{ message: string }>(
+    `${this.apiUrl}/admin-tutor-verification`,
+    {
+      tutorId,
+      verificationStatusName
+    }
+  );
+}
+addDemoAvailability(data: {
+  tutorDemoRequestId: number;
+  availableDate: string;
+  startTime: string;
+  endTime: string;
+  tutorRemarks?: string;
+}): Observable<any> {
+
+  const payload = {
+    ...data,
+    startTime: `${data.startTime}:00`,
+    endTime: `${data.endTime}:00`
+  };
+
+  return this.http.post<any>(
+    `${this.apiUrl}/demo-availability`,
+    payload
+  );
+}
+
 }

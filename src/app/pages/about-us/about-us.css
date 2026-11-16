@@ -1,0 +1,403 @@
+
+:host {
+  display: block;
+  color: #0f172a;
+  font-family: Inter, Arial, sans-serif;
+}
+
+.about-page {
+  overflow: hidden;
+  background: #fff;
+}
+
+.about-container {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.about-hero {
+  position: relative;
+  padding: 95px 0 65px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 15% 20%, #dbeafe 0, transparent 36%),
+    radial-gradient(ellipse at 85% 10%, #e0e7ff 0, transparent 35%),
+    linear-gradient(180deg, #f8faff, #fff);
+}
+
+.about-label {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.7px;
+}
+
+.about-hero h1 {
+  max-width: 850px;
+  margin: 0 auto;
+  font-size: clamp(34px, 5vw, 58px);
+  font-weight: 800;
+  line-height: 1.16;
+  letter-spacing: -1.8px;
+}
+
+.about-hero h1 span,
+.about-section-heading h2 span,
+.about-cta h2 span {
+  color: #2563eb;
+}
+
+.about-hero > .about-container > p {
+  max-width: 690px;
+  margin: 22px auto 0;
+  color: #64748b;
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.about-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 13px;
+  margin-top: 30px;
+}
+
+.about-btn {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.about-btn-primary {
+  background: #2563eb;
+  color: #fff;
+  box-shadow: 0 8px 20px #2563eb26;
+}
+
+.about-btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+.about-btn-secondary {
+  border-color: #dbe5f5;
+  background: #fff;
+  color: #1e293b;
+}
+
+.about-btn-secondary:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.about-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 55px;
+  margin-top: 55px;
+  padding-top: 28px;
+  border-top: 1px solid #e8eef8;
+}
+
+.about-highlights div {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.about-highlights strong {
+  color: #172554;
+  font-size: 15px;
+}
+
+.about-highlights span {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.about-section {
+  padding: 85px 0;
+}
+
+.about-two-column {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  align-items: center;
+  gap: 60px;
+}
+
+.about-section-heading h2 {
+  margin: 0;
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -1px;
+}
+
+.about-section-heading > p {
+  max-width: 620px;
+  margin: 16px 0 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.about-purpose-cards {
+  display: grid;
+  gap: 18px;
+}
+
+.purpose-card,
+.benefit-card {
+  padding: 25px;
+  border: 1px solid #e5ebf5;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 28px #0f172a08;
+}
+
+.purpose-icon,
+.benefit-icon,
+.step-icon {
+  display: flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.purpose-card h3,
+.benefit-card h3,
+.about-step h3 {
+  margin: 17px 0 9px;
+  color: #172554;
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.purpose-card p,
+.benefit-card p,
+.about-step p {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.85;
+}
+
+.about-process {
+  padding: 85px 0;
+  background: #f8faff;
+}
+
+.centered {
+  margin: 0 auto 42px;
+  text-align: center;
+}
+
+.centered > p {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.about-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.about-step {
+  position: relative;
+  padding: 28px 24px;
+  border: 1px solid #e5ebf5;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 25px #0f172a06;
+}
+
+.step-number {
+  position: absolute;
+  top: 23px;
+  right: 24px;
+  color: #dbeafe;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.step-icon {
+  width: 48px;
+  height: 48px;
+  font-size: 25px;
+}
+
+.about-benefits {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.benefit-card {
+  padding: 23px 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.benefit-card:hover,
+.purpose-card:hover,
+.about-step:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px #2563eb0d;
+}
+
+.benefit-icon {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+}
+
+.about-cta {
+  padding: 75px 24px;
+  background:
+    radial-gradient(ellipse at 90% 10%, #60a5fa40, transparent 35%),
+    linear-gradient(120deg, #1d4ed8, #2563eb 60%, #1e40af);
+  text-align: center;
+}
+
+.about-cta .about-label {
+  color: #dbeafe;
+}
+
+.about-cta h2 {
+  max-width: 780px;
+  margin: 0 auto;
+  color: #fff;
+  font-size: clamp(30px, 4vw, 43px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -1px;
+}
+
+.about-cta h2 span {
+  color: #bfdbfe;
+}
+
+.about-cta p {
+  margin: 16px auto 0;
+  color: #dbeafe;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.about-cta .about-actions {
+  margin-top: 27px;
+}
+
+.about-btn-white {
+  background: #fff;
+  color: #1d4ed8;
+}
+
+.about-btn-white:hover {
+  background: #eff6ff;
+  transform: translateY(-2px);
+}
+
+.about-btn-outline {
+  border-color: #ffffff80;
+  background: transparent;
+  color: #fff;
+}
+
+.about-btn-outline:hover {
+  background: #ffffff18;
+  border-color: #fff;
+}
+
+@media (max-width: 900px) {
+  .about-two-column {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+
+  .about-benefits {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-steps {
+    gap: 14px;
+  }
+
+  .about-step {
+    padding: 23px 18px;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-container {
+    width: min(100% - 32px, 1120px);
+  }
+
+  .about-hero {
+    padding: 65px 0 45px;
+  }
+
+  .about-hero h1 {
+    letter-spacing: -1px;
+  }
+
+  .about-hero > .about-container > p {
+    font-size: 14px;
+  }
+
+  .about-highlights {
+    gap: 25px;
+    margin-top: 38px;
+  }
+
+  .about-highlights strong {
+    font-size: 13px;
+  }
+
+  .about-highlights span {
+    font-size: 11px;
+  }
+
+  .about-section,
+  .about-process {
+    padding: 60px 0;
+  }
+
+  .about-steps,
+  .about-benefits {
+    grid-template-columns: 1fr;
+  }
+
+  .about-section-heading h2 {
+    font-size: 31px;
+  }
+
+  .about-cta {
+    padding: 58px 16px;
+  }
+
+  .about-btn {
+    padding: 0 17px;
+    font-size: 12px;
+  }
+}

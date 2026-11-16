@@ -30,3 +30,94 @@ a {
 main {
   min-height: calc(100vh - 80px);
 }
+
+
+.app-layout {
+  min-height: 100vh;
+}
+
+.app-content {
+  min-width: 0;
+}
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f8faff;
+}
+
+.admin-layout app-admin-sidebar {
+  flex: 0 0 260px;
+}
+
+.admin-layout .app-content {
+  flex: 1;
+  min-width: 0;
+  padding: 25px;
+}
+
+@media (max-width: 768px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .admin-layout app-admin-sidebar {
+    flex: none;
+  }
+
+  .admin-layout .app-content {
+    padding: 15px;
+  }
+}
+
+.parent-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f8ff;
+}
+
+.parent-layout app-parent-sidebar {
+  flex: 0 0 250px;
+}
+
+.parent-layout .app-content {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .parent-layout {
+    flex-direction: column;
+  }
+
+  .parent-layout app-parent-sidebar {
+    flex: none;
+  }
+}
+
+.tutor-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f8ff;
+}
+
+.tutor-layout app-tutor-sidebar {
+  flex: 0 0 250px;
+}
+
+.tutor-layout .app-content {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .tutor-layout {
+    flex-direction: column;
+  }
+
+  .tutor-layout app-tutor-sidebar {
+    flex: none;
+  }
+}
+
+

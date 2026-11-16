@@ -1,0 +1,103 @@
+
+<main class="profile-page">
+  <a routerLink="/find-tutor" class="back-link">← Back to Find Tutors</a>
+
+  <section class="profile-card" *ngIf="loading">
+    <h2>Loading tutor profile...</h2>
+    <p>Please wait while we load the tutor details.</p>
+  </section>
+
+  <section class="profile-card error-card" *ngIf="!loading && errorMessage">
+    <h2>Profile unavailable</h2>
+    <p>{{ errorMessage }}</p>
+    <a routerLink="/find-tutor" class="profile-button secondary-button">
+      Find Tutors
+    </a>
+  </section>
+
+  <ng-container *ngIf="!loading && tutor as t">
+    <section class="profile-card">
+      <header class="profile-header">
+        <div class="profile-avatar">
+          <img
+            *ngIf="t.profilePhoto"
+            [src]="t.profilePhoto"
+            [alt]="t.tutorName"
+          />
+          <span *ngIf="!t.profilePhoto">
+            {{ t.tutorName.charAt(0).toUpperCase() }}
+          </span>
+        </div>
+
+        <div class="profile-identity">
+          <span class="verified-label">✓ Verified Tutor</span>
+          <h1>{{ t.tutorName }}</h1>
+          <p>{{ t.highestDegree || 'Qualification not provided' }}</p>
+        </div>
+      </header>
+
+      <div class="profile-details">
+        <div class="detail-item">
+          <span>Subject</span>
+          <strong>{{ t.subjectName }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Location</span>
+          <strong>
+            {{ t.areaName || 'Area not specified' }},
+            {{ t.cityName || 'City not specified' }}
+          </strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Experience</span>
+          <strong>{{ t.experienceYears }} years</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Hourly Rate</span>
+          <strong>
+            {{ t.hourlyRate != null ? ('Rs. ' + t.hourlyRate) : 'Not provided' }}
+          </strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Demo</span>
+          <strong>{{ t.isDemoAvailable ? 'Free demo available' : 'Demo not available' }}</strong>
+        </div>
+
+        <div class="detail-item">
+          <span>Reviews</span>
+          <strong>
+            ★ {{ t.averageRating || 0 }} ({{ t.totalReviews || 0 }} reviews)
+          </strong>
+        </div>
+      </div>
+
+      <section class="about-section">
+        <h2>About the Tutor</h2>
+        <p>{{ t.bio || 'No tutor introduction provided yet.' }}</p>
+      </section>
+
+      <div class="profile-actions">
+        <button
+          type="button"
+          class="profile-button primary-button"
+          (click)="requestThisTutor()"
+        >
+          Request This Tutor →
+        </button>
+
+        <a routerLink="/find-tutor" class="profile-button secondary-button">
+          Browse Other Tutors
+        </a>
+      </div>
+
+      <p class="contact-note">
+        TutorNest manages tutor requests and introductions through its admin
+        process. Direct contact details are not displayed here.
+      </p>
+    </section>
+  </ng-container>
+</main>

@@ -1,0 +1,51 @@
+
+<aside class="admin-sidebar">
+
+  <a routerLink="/admin/applications" class="admin-logo">
+    Tutor<span>Nest</span>
+    <small>ADMIN PANEL</small>
+  </a>
+
+  <div class="sidebar-section-title">MAIN MENU</div>
+
+  <nav class="sidebar-nav">
+
+    <a routerLink="/admin/applications"
+       routerLinkActive="active">
+      <span>▦</span>
+      Applications
+    </a>
+
+    <a routerLink="/admin/tutor-verification"
+       routerLinkActive="active">
+      <span>✓</span>
+      Tutor Verification
+    </a>
+
+    <a routerLink="/admin/pending-payments"
+       routerLinkActive="active">
+      <span>₹</span>
+      Pending Payments
+    </a>
+
+    <a routerLink="/admin/payment-account-settings"
+       routerLinkActive="active">
+      <span>⚙</span>
+      Payment Account Settings
+    </a>
+
+  </nav>
+
+  <div class="sidebar-bottom">
+    <a routerLink="/" class="website-link">
+      <span>↗</span>
+      View Website
+    </a>
+
+    <button type="button" class="logout-button" (click)="logout()">
+      <span>⇥</span>
+      Logout
+    </button>
+  </div>
+
+</aside>

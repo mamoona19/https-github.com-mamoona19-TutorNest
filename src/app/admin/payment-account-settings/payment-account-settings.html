@@ -1,0 +1,235 @@
+<div class="payment-account-settings">
+
+  <div class="page-header">
+    <div>
+      <span class="page-eyebrow">Admin Settings</span>
+      <h1>Payment Account Settings</h1>
+      <p>Manage bank and wallet accounts used for manual invoice payments.</p>
+    </div>
+
+
+<button class="btn-primary" type="button" (click)="openAddForm()">
+  + Add Payment Account
+</button>
+
+
+  </div>
+
+  <div class="alert success" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+
+  <div class="alert error" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Add/Edit Form -->
+
+  <section class="account-form-card" *ngIf="showForm">
+    <div class="form-heading">
+      <div>
+        <h2>{{ editingAccountId !== null ? 'Edit Payment Account' : 'Add Payment Account' }}</h2>
+        <p>Enter the account details parents will use for manual payments.</p>
+      </div>
+      <button type="button" class="btn-secondary" (click)="cancelForm()">Cancel</button>
+    </div>
+
+
+<form (ngSubmit)="saveAccount()" #accountForm="ngForm">
+
+  <div class="form-grid">
+
+    <div class="form-field">
+      <label for="paymentMethod">Payment Method <span>*</span></label>
+      <select
+        id="paymentMethod"
+        name="paymentMethodId"
+        [(ngModel)]="form.paymentMethodId"
+        required>
+        <option [ngValue]="0" disabled>Select payment method</option>
+        <option *ngFor="let method of paymentMethods" [ngValue]="method.paymentMethodId">
+          {{ method.paymentMethodName }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label for="paymentGateway">Payment Gateway</label>
+      <select
+        id="paymentGateway"
+        name="paymentGatewayId"
+        [(ngModel)]="form.paymentGatewayId">
+        <option [ngValue]="null">Select payment gateway (optional)</option>
+        <option *ngFor="let gateway of paymentGateways" [ngValue]="gateway.paymentGatewayId">
+          {{ gateway.paymentGatewayName }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label for="accountName">Account Name <span>*</span></label>
+      <input
+        id="accountName"
+        name="accountName"
+        type="text"
+        [(ngModel)]="form.accountName"
+        maxlength="200"
+        placeholder="e.g. TutorNest Official Account"
+        required />
+    </div>
+
+    <div class="form-field">
+      <label for="bankName">Bank Name</label>
+      <input
+        id="bankName"
+        name="bankName"
+        type="text"
+        [(ngModel)]="form.bankName"
+        maxlength="200"
+        placeholder="e.g. Meezan Bank" />
+    </div>
+
+    <div class="form-field">
+      <label for="accountNumber">Account Number</label>
+      <input
+        id="accountNumber"
+        name="accountNumber"
+        type="text"
+        [(ngModel)]="form.accountNumber"
+        maxlength="100"
+        placeholder="Enter account number" />
+    </div>
+
+    <div class="form-field">
+      <label for="iban">IBAN</label>
+      <input
+        id="iban"
+        name="iban"
+        type="text"
+        [(ngModel)]="form.iban"
+        maxlength="100"
+        placeholder="Enter IBAN" />
+    </div>
+
+    <div class="form-field">
+      <label for="mobileNumber">Mobile Number</label>
+      <input
+        id="mobileNumber"
+        name="mobileNumber"
+        type="text"
+        [(ngModel)]="form.mobileNumber"
+        maxlength="30"
+        placeholder="For EasyPaisa or JazzCash" />
+    </div>
+
+    <div class="form-field full-width">
+      <label for="instructions">Payment Instructions</label>
+      <textarea
+        id="instructions"
+        name="instructions"
+        [(ngModel)]="form.instructions"
+        maxlength="500"
+        rows="3"
+        placeholder="Instructions shown to parents"></textarea>
+    </div>
+
+  </div>
+
+  <div class="form-actions">
+    <button type="button" class="btn-secondary" (click)="cancelForm()">
+      Cancel
+    </button>
+
+    <button
+      type="submit"
+      class="btn-primary"
+      [disabled]="isSaving || !accountForm.valid || !form.paymentMethodId">
+      {{ isSaving ? 'Saving...' : (editingAccountId !== null ? 'Save Changes' : 'Add Account') }}
+    </button>
+  </div>
+
+</form>
+
+  </section>
+
+  <!-- Loading -->
+<p style="color: red; font-size: 20px;">
+  Loading: {{ isLoading }} | Accounts: {{ paymentAccounts.length }}
+</p>
+ <div class="loading-state" *ngIf="isLoading">
+  <div class="spinner"></div>
+  <span>Loading payment accounts...</span>
+</div>
+<div class="empty-state"
+     *ngIf="!isLoading && paymentAccounts.length === 0">
+  <h2>No payment accounts yet</h2>
+  <p>Add a bank or wallet account to show payment instructions to parents.</p>
+</div>
+
+  <!-- Empty State -->
+
+  <div class="empty-state" *ngIf="!isLoading && paymentAccounts.length === 0">
+    <div class="empty-icon">💳</div>
+    <h3>No Payment Accounts</h3>
+    <p>Add a bank or wallet account for parents to transfer invoice payments.</p>
+    <button type="button" class="btn-primary" (click)="openAddForm()">
+      + Add Payment Account
+    </button>
+  </div>
+
+  <!-- Accounts -->
+
+  <div class="accounts-grid" *ngIf="!isLoading && paymentAccounts.length > 0">
+  <div class="account-card" *ngFor="let account of paymentAccounts">
+    <div class="account-header">
+      <div>
+        <span class="account-method">{{ account.paymentMethodName }}</span>
+        <h2>{{ account.accountName }}</h2>
+      </div>
+
+      <span class="status-badge" [class.active]="account.isActive"
+            [class.inactive]="!account.isActive">
+        {{ account.isActive ? 'Active' : 'Inactive' }}
+      </span>
+    </div>
+
+    <div class="account-details">
+      <div class="detail-row">
+        <span class="detail-label">Bank</span>
+        <span class="detail-value">{{ account.bankName || '—' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Account Number</span>
+        <span class="detail-value">{{ account.accountNumber || '—' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">IBAN</span>
+        <span class="detail-value">{{ account.iban || '—' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Payment Channel</span>
+        <span class="detail-value">{{ account.paymentGatewayName || '—' }}</span>
+      </div>
+    </div>
+
+    <div class="instructions" *ngIf="account.instructions">
+      <h3>Payment Instructions</h3>
+      <p>{{ account.instructions }}</p>
+    </div>
+
+    <div class="account-actions">
+      <button type="button" class="btn-outline" (click)="openEditForm(account)">
+        Edit
+      </button>
+
+      <button type="button" class="btn-secondary" (click)="toggleAccountStatus(account)">
+        {{ account.isActive ? 'Deactivate' : 'Activate' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+</div>

@@ -1,0 +1,249 @@
+
+<main class="find-tutor-page">
+
+  <section class="page-hero">
+    <div class="page-hero-content">
+      <span class="eyebrow">YOUR LEARNING JOURNEY STARTS HERE</span>
+      <h1>Find the <span>right tutor</span> for you</h1>
+      <p>
+        Search for verified tutors by subject, location and budget.
+      </p>
+    </div>
+  </section>
+
+  <section class="search-section">
+    <div class="search-card">
+      <div class="search-heading">
+        <div>
+          <h2>Find your tutor</h2>
+          <p>Choose your preferences to narrow your search.</p>
+        </div>
+        <span class="verified-label">✓ Verified tutors</span>
+      </div>
+
+      <form (ngSubmit)="searchTutors(); $event.preventDefault()">
+        <div class="filters-grid">
+
+          <div class="form-field">
+            <label for="subject">Subject</label>
+           <select
+  id="subject"
+  name="subject"
+  [(ngModel)]="subjectId"
+  (click)="onSubjectClick()"
+>
+  <option [ngValue]="null">All subjects</option>
+  <option
+    *ngFor="let item of subjects"
+    [ngValue]="item.subjectId"
+  >
+    {{ item.subjectName }}
+  </option>
+</select>
+          </div>
+
+          <div class="form-field">
+            <label for="city">City</label>
+            <select
+              id="city"
+              name="city"
+              [(ngModel)]="cityId"
+              (ngModelChange)="onCityChange()"
+            >
+              <option [ngValue]="null">All cities</option>
+              <option
+                *ngFor="let item of cities"
+                [ngValue]="item.cityId"
+              >
+                {{ item.cityName }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="area">Area</label>
+            <select
+              id="area"
+              name="area"
+              [(ngModel)]="areaId"
+              [disabled]="cityId == null || areas.length === 0"
+            >
+              <option [ngValue]="null">All areas</option>
+              <option
+                *ngFor="let item of areas"
+                [ngValue]="item.areaId"
+              >
+                {{ item.areaName }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="maxBudget">Maximum hourly rate (Rs.)</label>
+            <input
+              id="maxBudget"
+              name="maxBudget"
+              type="number"
+              min="0"
+              [(ngModel)]="maxBudget"
+              placeholder="e.g. 2000"
+            />
+          </div>
+
+        </div>
+
+
+        <div class="filter-actions">
+        <button
+  class="search-btn"
+  type="submit"
+  [disabled]="loading"
+>
+  {{ loading ? 'Searching...' : 'Search Tutors →' }}
+</button>
+
+          <button
+            class="clear-btn"
+            type="button"
+            (click)="clearFilters()"
+            [disabled]="loading"
+          >
+            Clear filters
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="results-section">
+    <div class="results-heading">
+      <div>
+        <h2>Verified tutors</h2>
+        <p>Explore tutors who have completed verification.</p>
+      </div>
+    </div>
+
+    <div class="results-message" *ngIf="loading">
+      <div class="message-icon">🔎</div>
+      <h3>Searching for tutors...</h3>
+      <p>Please wait while we look for matching verified tutors.</p>
+    </div>
+
+    <div class="results-message" *ngIf="!loading && errorMessage">
+      <h3>Unable to complete your search</h3>
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <div
+      class="results-message"
+      *ngIf="!loading && !errorMessage && searched && tutors.length === 0"
+    >
+      <div class="message-icon">🔎</div>
+      <h3>No matching tutors found</h3>
+      <p>Try changing your subject, location or maximum hourly rate.</p>
+    </div>
+
+    <div
+      class="results-message"
+      *ngIf="!loading && !errorMessage && !searched"
+    >
+      <div class="message-icon">🔎</div>
+      <h3>Ready to find your tutor?</h3>
+      <p>
+        Set your search preferences above and select
+        <strong>Search Tutors</strong> to look for matching tutors.
+      </p>
+    </div>
+
+    <div class="tutor-results" *ngIf="!loading && tutors.length > 0">
+      <article class="tutor-card" *ngFor="let tutor of tutors">
+
+        <div class="tutor-card-header">
+          <div class="tutor-avatar">
+            <img
+              *ngIf="tutor.profilePhoto"
+              [src]="tutor.profilePhoto"
+              [alt]="tutor.tutorName"
+            />
+            <span *ngIf="!tutor.profilePhoto">
+              {{ tutor.tutorName.charAt(0).toUpperCase() }}
+            </span>
+          </div>
+
+          <div class="tutor-identity">
+            <h3>{{ tutor.tutorName }}</h3>
+            <p>{{ tutor.highestDegree || 'Qualification not provided' }}</p>
+          </div>
+
+          <span class="verified-label">✓ Verified</span>
+        </div>
+
+        <p class="tutor-bio">
+          {{ tutor.bio || 'No tutor introduction provided yet.' }}
+        </p>
+
+        <div class="tutor-details">
+          <div>
+            <span class="detail-label">Subject</span>
+            <strong>{{ tutor.subjectName }}</strong>
+          </div>
+
+          <div>
+            <span class="detail-label">Location</span>
+            <strong>
+              {{ tutor.areaName || 'Area not specified' }},
+              {{ tutor.cityName || 'City not specified' }}
+            </strong>
+          </div>
+
+          <div>
+            <span class="detail-label">Experience</span>
+            <strong>{{ tutor.experienceYears }} years</strong>
+          </div>
+
+          <div>
+            <span class="detail-label">Hourly rate</span>
+            <strong>
+              {{ tutor.hourlyRate != null
+                ? ('Rs. ' + tutor.hourlyRate)
+                : 'Not provided' }}
+            </strong>
+          </div>
+        </div>
+
+        <div class="tutor-card-footer">
+          <span class="demo-label" *ngIf="tutor.isDemoAvailable">
+            Free demo available
+          </span>
+
+          <span class="demo-label" *ngIf="!tutor.isDemoAvailable">
+            Demo not available
+          </span>
+
+          <span class="rating-label">
+            ★ {{ tutor.averageRating || 0 }}
+            ({{ tutor.totalReviews || 0 }} reviews)
+          </span>
+        </div>
+<div class="tutor-card-actions">
+  <button
+    type="button"
+    class="view-profile-btn"
+    (click)="viewTutorProfile(tutor)"
+  >
+    View Profile
+  </button>
+
+  <button
+    type="button"
+    class="request-tutor-btn"
+    (click)="requestThisTutor(tutor)"
+  >
+    Request This Tutor →
+  </button>
+</div>
+      </article>
+    </div>
+  </section>
+
+</main>

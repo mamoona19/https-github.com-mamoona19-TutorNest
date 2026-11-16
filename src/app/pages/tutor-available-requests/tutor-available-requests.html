@@ -1,0 +1,106 @@
+
+<div class="available-page">
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">TUTOR OPPORTUNITIES</span>
+      <h1>Available Tuition Requests</h1>
+      <p>Explore suitable tuition requests and apply for opportunities.</p>
+    </div>
+
+    <button type="button" class="back-button" (click)="goBack()">
+      Back to Dashboard
+    </button>
+  </div>
+
+  <div *ngIf="applyMessage" class="success-message" role="status">
+    {{ applyMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message" role="alert">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    Loading available requests...
+  </div>
+
+  <div *ngIf="!loading && !errorMessage && availableRequests.length === 0"
+       class="empty-state">
+    <h2>No Available Requests</h2>
+    <p>There are currently no tuition requests available for you.</p>
+  </div>
+
+  <div class="request-grid" *ngIf="!loading && availableRequests.length > 0">
+
+    <article class="request-card"
+             *ngFor="let request of availableRequests">
+
+      <div class="card-header">
+        <div>
+          <span class="request-label">Tuition Request</span>
+          <h2>#{{ request.tuitionRequestId }}</h2>
+        </div>
+        <span class="status">Available</span>
+      </div>
+
+      <div class="request-details">
+
+        <div class="detail">
+          <span>Subject ID</span>
+          <strong>{{ request.subjectId }}</strong>
+        </div>
+
+        <div class="detail">
+          <span>Student ID</span>
+          <strong>{{ request.studentId }}</strong>
+        </div>
+
+        <div class="detail">
+          <span>Tuition Type</span>
+          <strong>
+            {{ request.tuitionTypeId === 1 ? 'Home Tuition' :
+               request.tuitionTypeId === 2 ? 'Online Tuition' :
+               'Type ' + request.tuitionTypeId }}
+          </strong>
+        </div>
+
+        <div class="detail">
+          <span>City ID</span>
+          <strong>{{ request.cityId }}</strong>
+        </div>
+
+        <div class="detail">
+          <span>Area ID</span>
+          <strong>{{ request.areaId }}</strong>
+        </div>
+
+        <div class="detail">
+          <span>Monthly Budget</span>
+          <strong>Rs. {{ request.budget | number:'1.0-0' }}</strong>
+        </div>
+
+        <div class="detail">
+          <span>Preferred Start Date</span>
+          <strong>{{ request.preferredStartDate | date:'dd MMM yyyy' }}</strong>
+        </div>
+
+      </div>
+
+      <div class="instructions"
+           *ngIf="request.specialInstructions">
+        <span>Additional Requirements</span>
+        <p>{{ request.specialInstructions }}</p>
+      </div>
+
+      <button type="button"
+              class="apply-button"
+              [disabled]="applyingRequestId !== null"
+              (click)="applyForRequest(request)">
+        {{ applyingRequestId === request.tuitionRequestId
+            ? 'Applying...'
+            : 'Apply for Tuition' }}
+      </button>
+
+    </article>
+  </div>
+</div>

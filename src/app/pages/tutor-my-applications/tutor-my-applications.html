@@ -1,0 +1,101 @@
+
+<div class="applications-page">
+
+  <header class="page-header">
+    <div>
+      <span class="section-eyebrow">TUTORNEST · TUTOR PORTAL</span>
+      <h1>My Applications</h1>
+      <p>Track the tuition requests you have applied for and monitor their status.</p>
+    </div>
+
+    <div class="application-total">
+      <strong>{{ myApplications.length }}</strong>
+      <span>Total Applications</span>
+    </div>
+  </header>
+
+  @if (loading) {
+    <div class="empty-state">
+      <p>Loading your applications...</p>
+    </div>
+  }
+  @else if (errorMessage) {
+    <div class="error-message">
+      {{ errorMessage }}
+      <button type="button" (click)="loadMyApplications()">Try Again</button>
+    </div>
+  }
+  @else if (myApplications.length === 0) {
+    <div class="empty-state">
+      <h3>No applications yet</h3>
+      <p>Your applications will appear here after you apply for a tuition request.</p>
+    </div>
+  }
+  @else {
+    <div class="application-list">
+
+      @for (application of myApplications; track application.requestTutorId) {
+        <article class="application-card">
+
+          <div class="application-heading">
+            <div>
+              <span class="request-label">
+                Application #{{ application.requestTutorId }}
+              </span>
+              <h2>{{ application.subjectName }} Tuition</h2>
+            </div>
+
+            <span
+              class="status-badge"
+              [class.pending]="application.requestStatusId === 1"
+              [class.accepted]="application.requestStatusId === 2"
+              [class.rejected]="application.requestStatusId === 3">
+              {{ application.applicationStatus }}
+            </span>
+          </div>
+
+          <div class="application-details">
+
+            <div class="detail-item">
+              <span>Tuition Request</span>
+              <strong>#{{ application.tuitionRequestId }}</strong>
+            </div>
+
+            <div class="detail-item">
+              <span>Budget</span>
+              <strong>Rs. {{ application.budget }}</strong>
+            </div>
+
+            @if (application.cityName || application.areaName) {
+              <div class="detail-item">
+                <span>Location</span>
+                <strong>
+                  {{ application.cityName }}
+                  @if (application.areaName) {
+                    , {{ application.areaName }}
+                  }
+                </strong>
+              </div>
+            }
+
+            <div class="detail-item">
+              <span>Preferred Start</span>
+              <strong>{{ application.preferredStartDate | date:'mediumDate' }}</strong>
+            </div>
+
+          </div>
+
+          @if (application.tutorRemarks) {
+            <div class="remarks">
+              <span>Your Remarks</span>
+              <p>{{ application.tutorRemarks }}</p>
+            </div>
+          }
+
+        </article>
+      }
+
+    </div>
+  }
+
+</div>

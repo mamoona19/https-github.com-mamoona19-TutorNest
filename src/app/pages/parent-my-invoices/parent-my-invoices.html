@@ -1,0 +1,185 @@
+<section class="invoices-card">
+    <div class="card-header">
+      <div>
+        <span class="section-eyebrow">BILLING & PAYMENTS</span>
+        <h2>My Invoices</h2>
+        <p>Review tuition charges, payment instructions and invoice status.</p>
+      </div>
+      <div class="request-count"
+        *ngIf="!isLoadingInvoices && !invoicesError">
+        <strong>{{ invoices.length }}</strong>
+        <span>Invoice{{ invoices.length === 1 ? '' : 's' }}</span>
+      </div>
+    </div>
+
+    <div class="requests-loading" *ngIf="isLoadingInvoices">
+      <div class="loading-spinner"></div>
+      <span>Loading your invoices...</span>
+    </div>
+
+    <div class="requests-error" *ngIf="!isLoadingInvoices && invoicesError">
+      <div class="error-icon">!</div>
+      <div>
+        <strong>Unable to load invoices</strong>
+        <p>{{ invoicesError }}</p>
+      </div>
+    </div>
+
+    <div class="no-requests"
+      *ngIf="!isLoadingInvoices && !invoicesError && invoices.length === 0">
+      <div class="empty-icon">🧾</div>
+      <h3>No invoices yet</h3>
+      <p>Your tuition invoices will appear here.</p>
+    </div>
+
+    <div class="invoices-list"
+      *ngIf="!isLoadingInvoices && !invoicesError && invoices.length > 0">
+
+      <div class="invoice-item"
+        *ngFor="let invoice of invoices | slice:0:(showAllInvoices ? invoices.length : 2); let i = index">
+
+        <div class="invoice-item-header">
+          <div>
+            <span class="section-eyebrow">INVOICE</span>
+            <h3>{{ invoice.invoiceNumber }}</h3>
+            <span class="request-id">Tuition Request #{{ invoice.tuitionRequestId }}</span>
+          </div>
+
+          <span class="status-badge"
+            [ngClass]="{
+              'status-paid': invoice.invoiceStatusName === 'Paid',
+              'status-pending': invoice.invoiceStatusName === 'Pending',
+              'status-cancelled': invoice.invoiceStatusName === 'Cancelled',
+              'status-due': invoice.invoiceStatusName === 'Due' || invoice.invoiceStatusName === 'Overdue'
+            }">
+            {{ invoice.invoiceStatusName }}
+          </span>
+        </div>
+
+        <div class="request-details">
+          <ng-container *ngIf="i === 0">
+            <div class="detail-item">
+              <span class="detail-label">Invoice Date</span>
+              <span class="detail-value">
+                {{ invoice.invoiceDate ? (invoice.invoiceDate | date:'dd MMM yyyy') : 'Not available' }}
+              </span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Due Date</span>
+              <span class="detail-value">
+                {{ invoice.dueDate ? (invoice.dueDate | date:'dd MMM yyyy') : 'Not available' }}
+              </span>
+            </div>
+          </ng-container>
+
+          <div class="detail-item">
+            <span class="detail-label">Payment Terms</span>
+            <span class="detail-value">{{ invoice.paymentTermsName }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Monthly Fee</span>
+            <span class="detail-value budget-value">Rs. {{ invoice.monthlyFee | number }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Invoice Amount</span>
+            <span class="detail-value">Rs. {{ invoice.invoiceAmount | number }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Amount Payable</span>
+            <span class="detail-value budget-value">Rs. {{ invoice.netAmount | number }}</span>
+          </div>
+        </div>
+
+        <!-- PAYMENT REQUIRED -->
+        <div class="invoice-payment-instructions"
+          *ngIf="invoice.invoiceStatusName !== 'Paid'">
+
+          <div class="invoice-payment-status">
+            <span class="status-badge status-pending">Payment Required</span>
+          </div>
+
+          <h4>Payment Instructions</h4>
+          <p>
+            Transfer the invoice amount to an official TutorNest payment account below.
+            Our admin team will verify your payment and update your invoice.
+          </p>
+
+          <div class="payment-amount">
+            <span>Amount to pay</span>
+            <strong>Rs. {{ invoice.netAmount | number }}</strong>
+          </div>
+
+          <div *ngIf="isLoadingPaymentAccounts">
+            Loading official payment details...
+          </div>
+
+          <div class="requests-error"
+            *ngIf="!isLoadingPaymentAccounts && paymentAccountsError">
+            {{ paymentAccountsError }}
+          </div>
+
+          <div
+            *ngIf="!isLoadingPaymentAccounts && !paymentAccountsError && paymentAccounts.length === 0">
+            <p>
+              Official payment details are currently unavailable.
+              Please contact TutorNest admin for payment instructions.
+            </p>
+          </div>
+
+          <div class="payment-account-list"
+            *ngIf="!isLoadingPaymentAccounts && !paymentAccountsError && paymentAccounts.length > 0">
+
+            <div class="payment-account-item"
+              *ngFor="let account of paymentAccounts">
+
+              <h5>{{ account.accountName }}</h5>
+
+              <div *ngIf="account.paymentMethodName">
+                <strong>Payment Method:</strong> {{ account.paymentMethodName }}
+              </div>
+              <div *ngIf="account.paymentGatewayName">
+                <strong>Provider:</strong> {{ account.paymentGatewayName }}
+              </div>
+              <div *ngIf="account.bankName">
+                <strong>Bank:</strong> {{ account.bankName }}
+              </div>
+              <div *ngIf="account.accountNumber">
+                <strong>Account Number:</strong> {{ account.accountNumber }}
+              </div>
+              <div *ngIf="account.iban">
+                <strong>IBAN:</strong> {{ account.iban }}
+              </div>
+              <div *ngIf="account.mobileNumber">
+                <strong>Mobile Number:</strong> {{ account.mobileNumber }}
+              </div>
+              <div *ngIf="account.instructions">
+                <strong>Payment Instructions:</strong>
+                <p>{{ account.instructions }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAYMENT VERIFIED -->
+        <div class="invoice-footer" *ngIf="invoice.invoiceStatusName === 'Paid'">
+          <div class="invoice-amount">
+            <span>Total Paid</span>
+            <strong>Rs. {{ invoice.netAmount | number }}</strong>
+          </div>
+          <div class="invoice-paid">✓ Payment Verified</div>
+        </div>
+      </div>
+
+      <div class="explore-requests-footer" *ngIf="invoices.length > 2">
+        <button type="button" class="explore-all-btn"
+          (click)="showAllInvoices = !showAllInvoices">
+          <span *ngIf="!showAllInvoices">Explore All {{ invoices.length }} Invoices</span>
+          <span *ngIf="showAllInvoices">Show Less</span>
+          <span class="explore-arrow" [class.arrow-up]="showAllInvoices">→</span>
+        </button>
+        <span class="requests-display-count">
+          Showing {{ showAllInvoices ? invoices.length : 2 }} of {{ invoices.length }} invoices
+        </span>
+      </div>
+    </div>
+  </section>

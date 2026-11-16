@@ -1,0 +1,244 @@
+
+<div class="profile-container">
+
+  <!-- Header -->
+  <div class="profile-header">
+    <div>
+      <h2>My Tutor Profile</h2>
+      <p>Manage your personal information and teaching details.</p>
+    </div>
+
+    <button type="button" class="back-btn" (click)="goBack()">
+      Back to Dashboard
+    </button>
+  </div>
+
+  <div *ngIf="profileLoading" class="loading">
+    Loading your profile...
+  </div>
+
+  <ng-container *ngIf="!profileLoading && tutorProfile">
+
+    <!-- Personal Information -->
+    <section class="profile-card">
+      <div class="section-heading">
+        <div>
+          <h3>Personal Information</h3>
+          <p>Basic details associated with your account.</p>
+        </div>
+        <span class="section-number">01</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" [value]="tutorProfile.fullName" disabled>
+        </div>
+
+        <div class="form-group">
+          <label>CNIC</label>
+          <input type="text" [value]="tutorProfile.cnic" disabled>
+        </div>
+
+        <div class="form-group">
+          <label>Gender</label>
+          <select [(ngModel)]="profileForm.genderId" name="genderId">
+            <option [ngValue]="null">Select Gender</option>
+            <option *ngFor="let gender of lookups.genders"
+                    [ngValue]="gender.genderId">
+              {{ gender.genderName }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Teaching Location -->
+    <section class="profile-card">
+      <div class="section-heading">
+        <div>
+          <h3>Teaching Location</h3>
+          <p>Choose the city and area where you are available to teach.</p>
+        </div>
+        <span class="section-number">02</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>City <span class="required">*</span></label>
+          <select
+            [(ngModel)]="profileForm.cityId"
+            name="cityId"
+            (ngModelChange)="onCityChange()">
+
+            <option [ngValue]="0">Select City</option>
+            <option *ngFor="let city of lookups.cities"
+                    [ngValue]="city.cityId">
+              {{ city.cityName }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Area <span class="required">*</span></label>
+          <select [(ngModel)]="profileForm.areaId" name="areaId">
+            <option [ngValue]="0">Select Area</option>
+            <option *ngFor="let area of filteredAreas"
+                    [ngValue]="area.areaId">
+              {{ area.areaName }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Qualifications & Professional Details -->
+    <section class="profile-card">
+      <div class="section-heading">
+        <div>
+          <h3>Qualifications & Professional Details</h3>
+          <p>Help parents understand your education, experience and teaching services.</p>
+        </div>
+        <span class="section-number">03</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Highest Degree <span class="required">*</span></label>
+          <select [(ngModel)]="profileForm.highestDegreeId"
+                  name="highestDegreeId">
+            <option [ngValue]="0">Select Degree</option>
+            <option *ngFor="let degree of lookups.degrees"
+                    [ngValue]="degree.degreeId">
+              {{ degree.degreeName }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Teaching Experience (Years)</label>
+          <input type="number" min="0"
+                 [(ngModel)]="profileForm.experienceYears"
+                 name="experienceYears">
+        </div>
+
+        <div class="form-group">
+          <label>Hourly Rate (Rs.)</label>
+          <input type="number" min="0"
+                 [(ngModel)]="profileForm.hourlyRate"
+                 name="hourlyRate"
+                 placeholder="Enter hourly rate">
+        </div>
+
+        <div class="form-group">
+          <label>Working Hours</label>
+          <select [(ngModel)]="profileForm.workingHours"
+                  name="workingHours">
+            <option value="Morning">Morning (8 AM – 12 PM)</option>
+            <option value="Afternoon">Afternoon (12 PM – 4 PM)</option>
+            <option value="Evening">Evening (4 PM – 8 PM)</option>
+            <option value="Flexible">Flexible (Any Time)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group bio-group">
+        <label>About Me / Teaching Bio</label>
+        <textarea
+          rows="5"
+          [(ngModel)]="profileForm.bio"
+          name="bio"
+          placeholder="Describe your qualifications, teaching experience and teaching approach...">
+        </textarea>
+      </div>
+
+      <div *ngIf="profileSuccessMessage" class="success-message">
+        {{ profileSuccessMessage }}
+      </div>
+
+      <div *ngIf="profileErrorMessage" class="error-message">
+        {{ profileErrorMessage }}
+      </div>
+
+      <div class="section-footer">
+        <button type="button" class="save-btn"
+                (click)="saveProfile()"
+                [disabled]="profileSaving">
+          {{ profileSaving ? 'Saving...' : 'Save Profile Information' }}
+        </button>
+      </div>
+    </section>
+
+    <!-- Teaching Preferences -->
+    <section class="profile-card">
+      <div class="section-heading">
+        <div>
+          <h3>Teaching Preferences</h3>
+          <p>Select the tuition modes you offer to students.</p>
+        </div>
+        <span class="section-number">04</span>
+      </div>
+
+      <div *ngIf="loading" class="loading">
+        Loading tuition preferences...
+      </div>
+
+      <div *ngIf="!loading">
+        <div class="tuition-options">
+          <label class="tuition-option"
+                 *ngFor="let type of lookups.tuitionTypes">
+
+            <input
+              type="checkbox"
+              [checked]="selectedTuitionTypes.includes(type.tuitionTypeId)"
+              (change)="toggleTuitionType(
+                type.tuitionTypeId,
+                $any($event.target).checked
+              )">
+
+            <span>{{ type.tuitionTypeName }}</span>
+          </label>
+        </div>
+
+        <div *ngIf="successMessage" class="success-message">
+          {{ successMessage }}
+        </div>
+
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <div class="section-footer">
+          <button type="button" class="save-btn"
+                  (click)="saveTuitionTypes()"
+                  [disabled]="saving">
+            {{ saving ? 'Saving...' : 'Save Teaching Preferences' }}
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Profile Performance -->
+    <section class="profile-card">
+      <div class="section-heading">
+        <div>
+          <h3>Profile Performance</h3>
+          <p>Your current feedback from students.</p>
+        </div>
+      </div>
+
+      <div class="performance-grid">
+        <div class="info-item">
+          <span>Average Rating</span>
+          <strong>{{ tutorProfile.averageRating || 0 }} / 5</strong>
+        </div>
+
+        <div class="info-item">
+          <span>Total Reviews</span>
+          <strong>{{ tutorProfile.totalReviews || 0 }}</strong>
+        </div>
+      </div>
+    </section>
+
+  </ng-container>
+</div>

@@ -1,0 +1,288 @@
+
+<div class="parent-profile-page">
+
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="profile-card state-card">
+      <p>Loading your profile...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @else if (errorMessage) {
+    <div class="profile-card state-card">
+      <p>{{ errorMessage }}</p>
+      <button type="button" (click)="loadProfile()">
+        Try Again
+      </button>
+    </div>
+  }
+
+  <!-- Profile Content -->
+  @else if (profile) {
+
+    <!-- Page Header -->
+    <div class="profile-page-header">
+      <div>
+        <span class="section-eyebrow">PARENT PORTAL</span>
+        <h1>My Profile</h1>
+        <p>Manage your personal account information.</p>
+      </div>
+
+     <a routerLink="/parent/dashboard" class="back-btn">
+  <span>←</span>
+  Back to Dashboard
+</a>
+    </div>
+
+    <!-- Main Profile Card -->
+    <div class="profile-card">
+
+      <!-- Profile Identity -->
+      <div class="profile-card-header">
+
+        <div class="profile-avatar">
+          {{ (profile.firstName || 'P').charAt(0).toUpperCase() }}
+        </div>
+
+        <div class="profile-identity">
+          <h2>{{ fullName }}</h2>
+          <span class="account-role">Parent Account</span>
+        </div>
+
+      </div>
+
+      <div class="profile-divider"></div>
+
+      <!-- Personal Information -->
+      <section class="profile-section">
+
+        <div class="section-heading">
+          <div>
+            <h3>Personal Information</h3>
+            <p>Your registered personal and contact details.</p>
+          </div>
+          <span class="section-number">01</span>
+        </div>
+
+        <div class="profile-info-grid">
+
+          <div class="info-item">
+            <label>First Name</label>
+            <div class="info-value">
+              {{ profile.firstName || 'Not provided' }}
+            </div>
+          </div>
+
+          <div class="info-item">
+            <label>Last Name</label>
+            <div class="info-value">
+              {{ profile.lastName || 'Not provided' }}
+            </div>
+          </div>
+
+          <div class="info-item">
+            <label>Email Address</label>
+            <div class="info-value">
+              {{ profile.email || 'Not provided' }}
+            </div>
+          </div>
+
+          <div class="info-item">
+            <label>Phone Number</label>
+            <div class="info-value">
+              {{ profile.phoneNumber || 'Not provided' }}
+            </div>
+          </div>
+
+          <div class="info-item">
+            <label>Gender</label>
+            <div class="info-value">
+              {{ profile.genderName || 'Not provided' }}
+            </div>
+          </div>
+
+          <div class="info-item">
+            <label>Occupation</label>
+            <div class="info-value">
+              {{ profile.occupation || 'Not provided' }}
+            </div>
+          </div>
+
+          <div class="info-item">
+            <label>Account Type</label>
+            <div class="info-value">Parent</div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <div class="profile-divider"></div>
+
+      <!-- Location Information -->
+      <section class="profile-section">
+
+        <div class="section-heading">
+          <div>
+            <h3>Location Information</h3>
+            <p>Your registered residential location.</p>
+          </div>
+          <span class="section-number">02</span>
+        </div>
+
+        <div class="profile-info-grid">
+
+          <div class="info-item">
+            <label>City</label>
+            <div class="info-value">
+              {{ profile.cityName || 'Not provided' }}
+            </div>
+          </div>
+
+          <div class="info-item">
+            <label>Area</label>
+            <div class="info-value">
+              {{ profile.areaName || 'Not provided' }}
+            </div>
+          </div>
+
+          <div class="info-item">
+            <label>Preferred Contact Method</label>
+            <div class="info-value">
+              {{ profile.preferredContactMethod || 'Not provided' }}
+            </div>
+          </div>
+
+          <div class="info-item full-width">
+            <label>Address</label>
+            <div class="info-value">
+              {{ profile.address || 'Not provided' }}
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <div class="profile-divider"></div>
+
+      <!-- Children Information -->
+      <section class="profile-section">
+
+        <div class="section-heading">
+          <div>
+            <h3>My Children</h3>
+            <p>Registered student information and learning preferences.</p>
+          </div>
+
+          <span class="children-count">
+            {{ profile.children.length }}
+            {{ profile.children.length === 1 ? 'Child' : 'Children' }}
+          </span>
+        </div>
+
+        @if (profile.children.length > 0) {
+
+          <div class="children-list">
+
+            @for (child of profile.children; track child.studentId) {
+
+              <div class="child-profile-card">
+
+                <!-- Child Header -->
+                <div class="child-card-header">
+                  <div class="child-avatar">
+                    {{ (child.studentName || 'S').charAt(0).toUpperCase() }}
+                  </div>
+
+                  <div>
+                    <h4>{{ child.studentName }}</h4>
+                    <span>Student Profile</span>
+                  </div>
+                </div>
+
+                <!-- Child Details -->
+                <div class="profile-info-grid">
+
+                  <div class="info-item">
+                    <label>Gender</label>
+                    <div class="info-value">
+                      {{ child.genderName || 'Not provided' }}
+                    </div>
+                  </div>
+
+                  <div class="info-item">
+                    <label>Date of Birth</label>
+                    <div class="info-value">
+                      {{ child.dateOfBirth
+                        ? (child.dateOfBirth | date:'dd MMM yyyy')
+                        : 'Not provided' }}
+                    </div>
+                  </div>
+
+                  <div class="info-item">
+                    <label>Class</label>
+                    <div class="info-value">
+                      {{ child.className || 'Not provided' }}
+                    </div>
+                  </div>
+
+                  <div class="info-item">
+                    <label>Board</label>
+                    <div class="info-value">
+                      {{ child.boardName || 'Not provided' }}
+                    </div>
+                  </div>
+
+                  <div class="info-item">
+                    <label>School</label>
+                    <div class="info-value">
+                      {{ child.schoolName || 'Not provided' }}
+                    </div>
+                  </div>
+
+                  <div class="info-item">
+                    <label>Tuition Type</label>
+                    <div class="info-value">
+                      {{ child.tuitionTypeName || 'Not provided' }}
+                    </div>
+                  </div>
+
+                  <div class="info-item">
+                    <label>Preferred Tutor Gender</label>
+                    <div class="info-value">
+                      {{ child.preferredTutorGenderName || 'Any' }}
+                    </div>
+                  </div>
+
+                  <div class="info-item full-width">
+                    <label>Learning Notes</label>
+                    <div class="info-value">
+                      {{ child.learningNotes || 'No notes provided' }}
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+        @else {
+          <div class="empty-children">
+            <p>No children registered yet.</p>
+          </div>
+        }
+
+      </section>
+
+    </div>
+
+  }
+
+</div>

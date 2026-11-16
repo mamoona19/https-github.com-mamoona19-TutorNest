@@ -1,0 +1,125 @@
+
+<p *ngIf="successMessage" class="success-message">
+  {{ successMessage }}
+</p>
+<p>
+  Debug: Loading = {{ loading }},
+  Tutors = {{ tutors.length }}
+</p>
+<section class="verification-page">
+  <div class="page-header">
+    <div>
+      <h2>Tutor Verification</h2>
+      <p>Review tutor profiles and their verification status.</p>
+    </div>
+
+    <button
+      type="button"
+      class="refresh-btn"
+      (click)="loadTutors()"
+      [disabled]="loading">
+      {{ loading ? 'Loading...' : 'Refresh' }}
+    </button>
+  </div>
+
+  <p *ngIf="loading" class="info-message">
+    Loading tutors...
+  </p>
+
+  <p *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </p>
+
+  <div class="table-wrapper" *ngIf="!loading && !errorMessage">
+    <table>
+      <thead>
+        <tr>
+          <th>Tutor</th>
+          <th>CNIC</th>
+          <th>Location</th>
+          <th>Experience</th>
+          <th>Hourly Rate</th>
+          <th>Demo</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let tutor of tutors">
+          <td>
+            <strong>{{ tutor.tutorName }}</strong>
+            <small>Tutor ID: {{ tutor.tutorId }}</small>
+          </td>
+
+          <td>{{ tutor.cnic }}</td>
+
+          <td>
+            {{ tutor.cityName || 'N/A' }},
+            {{ tutor.areaName || 'N/A' }}
+          </td>
+
+          <td>{{ tutor.experienceYears }} years</td>
+
+          <td>
+            {{
+              tutor.hourlyRate === null
+                ? 'N/A'
+                : (tutor.hourlyRate | currency:'PKR ':'symbol':'1.0-2')
+            }}
+          </td>
+
+          <td>
+            {{ tutor.isDemoAvailable ? 'Available' : 'Not Available' }}
+          </td>
+
+         
+<td>
+  <span
+    class="status"
+    [class.status-verified]="tutor.verificationStatus === 'Verified'"
+    [class.status-rejected]="tutor.verificationStatus === 'Rejected'">
+    {{ tutor.verificationStatus }}
+  </span>
+</td>
+
+
+          <td class="actions-cell">
+            <ng-container
+              *ngIf="
+                tutor.verificationStatus === 'Pending';
+                else completedStatus
+              ">
+
+              <button
+                type="button"
+                class="approve-btn"
+                [disabled]="loading"
+                (click)="updateVerification(tutor, 'Verified')">
+                Approve
+              </button>
+
+              <button
+                type="button"
+                class="reject-btn"
+                [disabled]="loading"
+                (click)="updateVerification(tutor, 'Rejected')">
+                Reject
+              </button>
+            </ng-container>
+
+            <ng-template #completedStatus>
+              <span class="completed-label">Reviewed</span>
+            </ng-template>
+          </td>
+        </tr>
+
+        <tr *ngIf="tutors.length === 0">
+          <td colspan="8" class="empty-message">
+            No tutors found.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -1,0 +1,414 @@
+
+:host {
+  display: block;
+  color: #172554;
+  font-family: Inter, Arial, sans-serif;
+}
+
+.find-tutor-page {
+  min-height: 100vh;
+  background: #f8faff;
+  padding-bottom: 64px;
+}
+
+.page-hero {
+  padding: 64px 24px 100px;
+  text-align: center;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+}
+
+.page-hero-content {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  display: inline-block;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin-bottom: 16px;
+}
+
+.page-hero h1 {
+  margin: 0;
+  font-size: clamp(32px, 5vw, 48px);
+  line-height: 1.2;
+  letter-spacing: -1.5px;
+}
+
+.page-hero h1 span {
+  color: #2563eb;
+}
+
+.page-hero p {
+  max-width: 590px;
+  margin: 18px auto 0;
+  color: #64748b;
+  line-height: 1.8;
+  font-size: 16px;
+}
+
+.search-section,
+.results-section {
+  width: min(1100px, calc(100% - 40px));
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.search-section {
+  margin-top: -55px;
+  position: relative;
+}
+
+.search-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+}
+
+.search-heading,
+.results-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.search-heading h2,
+.results-heading h2 {
+  margin: 0 0 7px;
+  font-size: 23px;
+}
+
+.search-heading p,
+.results-heading p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.verified-label {
+  color: #15803d;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 9px 12px;
+  border-radius: 30px;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-field label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.form-field input,
+.form-field select {
+  width: 100%;
+  min-height: 46px;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  outline: none;
+  background: #fff;
+  color: #172554;
+  font: inherit;
+  font-size: 14px;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.search-btn,
+.clear-btn {
+  min-height: 45px;
+  padding: 0 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.search-btn {
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #fff;
+}
+
+.search-btn:hover {
+  background: #1d4ed8;
+}
+
+.search-btn span {
+  margin-left: 10px;
+}
+
+.clear-btn {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+}
+
+.results-section {
+  margin-top: 48px;
+}
+
+.results-message {
+  padding: 44px 24px;
+  text-align: center;
+  background: #fff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 18px;
+}
+
+.message-icon {
+  font-size: 34px;
+  margin-bottom: 12px;
+}
+
+.results-message h3 {
+  margin: 0 0 10px;
+  font-size: 21px;
+}
+
+.results-message p {
+  color: #64748b;
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 8px auto;
+}
+
+.results-message .notice {
+  font-size: 13px;
+  color: #475569;
+}
+
+@media (max-width: 760px) {
+  .page-hero {
+    padding: 48px 20px 85px;
+  }
+
+  .search-card {
+    padding: 22px;
+  }
+
+  .search-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .filters-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .filter-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .search-btn,
+  .clear-btn {
+    width: 100%;
+  }
+}
+
+.tutor-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 22px;
+  margin-top: 24px;
+}
+
+.tutor-card {
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tutor-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.1);
+}
+
+.tutor-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.tutor-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 58px;
+  height: 58px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.tutor-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tutor-identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.tutor-identity h3 {
+  margin: 0 0 5px;
+  color: #0f172a;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.tutor-identity p {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.tutor-card .verified-label {
+  flex-shrink: 0;
+  font-size: 11px;
+}
+
+.tutor-bio {
+  min-height: 44px;
+  margin: 0 0 20px;
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.tutor-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 12px;
+  padding: 18px 0;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tutor-details > div {
+  min-width: 0;
+}
+
+.detail-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.tutor-details strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tutor-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.demo-label {
+  color: #047857;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.rating-label {
+  color: #475569;
+  font-size: 12px;
+}
+
+.search-btn:disabled,
+.clear-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+@media (max-width: 480px) {
+  .tutor-card {
+    padding: 18px;
+  }
+
+  .tutor-card-header {
+    flex-wrap: wrap;
+  }
+
+  .tutor-details {
+    gap: 16px 10px;
+  }
+}
+
+.search-card select {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.search-card .form-field {
+  position: relative;
+  min-width: 0;
+}
+
+.search-card select:focus {
+  outline: 2px solid #93c5fd;
+  outline-offset: 1px;
+}
+
+
